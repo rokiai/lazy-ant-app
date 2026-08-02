@@ -2,8 +2,6 @@
 
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/) 格式。桌面端 LazyAnt 默认读取项目根目录的此文件。
 
-## [Unreleased]
-
 ## [1.1.0] - 2026-08-02
 
 ### 新增
