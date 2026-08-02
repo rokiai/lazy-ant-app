@@ -30,36 +30,7 @@ macOS · Windows · Linux
 
 > 链接始终指向 **最新 Release**。若尚未发版，请先到 [Releases 页](https://github.com/rokiai/lazy-ant-app/releases) 查看；发版后上表链接即可直接下载。
 >
-> 当前安装包**尚未做 Apple 开发者签名 / 公证**，从网上下载后系统可能提示「无法验证开发者」，见下方安装说明。
-
-## 安装说明
-
-### macOS
-
-1. 按芯片下载对应 DMG：[Apple Silicon](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt-arm64.dmg) · [Intel](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt-x64.dmg)
-2. 打开 DMG，把 **LazyAnt** 拖进「应用程序」
-3. 从「应用程序」启动
-
-若提示「已损坏，无法打开」，在终端执行：
-
-```bash
-xattr -cr /Applications/LazyAnt.app
-open /Applications/LazyAnt.app
-```
-
-若提示「无法验证开发者」：右键 App →「打开」→ 再点「打开」；或在「系统设置 → 隐私与安全性」中点「仍要打开」。
-
-### Windows
-
-1. 运行 [LazyAnt-setup.exe](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt-setup.exe)
-2. 若出现 SmartScreen：点「更多信息」→「仍要运行」
-
-### Linux
-
-- **AppImage**：`chmod +x LazyAnt.AppImage && ./LazyAnt.AppImage`（[下载](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt.AppImage)）
-- **deb**：`sudo dpkg -i lazyant_amd64.deb`（[下载](https://github.com/rokiai/lazy-ant-app/releases/latest/download/lazyant_amd64.deb)，缺依赖时再 `sudo apt -f install`）
-
----
+> 当前安装包**尚未做 Apple 开发者签名 / 公证**，从网上下载后系统可能提示「无法验证开发者」，见文末安装说明。
 
 ## 这是什么
 
@@ -232,3 +203,30 @@ Markdown 长文稿写作，左侧编辑、右侧实时预览。支持封面块�
 2. 在「模型」里授权写作用的 AI（如豆包、Kimi）
 3. 从首页进入「发文章」或「做图文」，选主题、写内容、预览定稿
 4. 点「发布」同步到平台草稿箱，或在「自动」里配置 Skill 流水线
+
+## 安装说明
+
+### macOS
+
+1. 按芯片下载对应 DMG：[Apple Silicon](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt-arm64.dmg) · [Intel](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt-x64.dmg)
+2. 打开 DMG，把 **LazyAnt** 拖进「应用程序」
+3. 从「应用程序」启动
+
+若提示「已损坏，无法打开」，在终端执行：
+
+```bash
+xattr -cr /Applications/LazyAnt.app
+open /Applications/LazyAnt.app
+```
+
+若提示「无法验证开发者」：右键 App →「打开」→ 再点「打开」；或在「系统设置 → 隐私与安全性」中点「仍要打开」。
+
+### Windows
+
+1. 运行 [LazyAnt-setup.exe](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt-setup.exe)
+2. 若出现 SmartScreen：点「更多信息」→「仍要运行」
+
+### Linux
+
+- **AppImage**：`chmod +x LazyAnt.AppImage && ./LazyAnt.AppImage`（[下载](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt.AppImage)）
+- **deb**：`sudo dpkg -i lazyant_amd64.deb`（[下载](https://github.com/rokiai/lazy-ant-app/releases/latest/download/lazyant_amd64.deb)，缺依赖时再 `sudo apt -f install`）
