@@ -16,6 +16,51 @@ macOS · Windows · Linux
 
 </div>
 
+## 下载
+
+前往 **[GitHub Releases](https://github.com/rokiai/lazy-ant-app/releases/latest)** 获取最新版，或点击下方链接直接下载：
+
+| 系统        | 架构                    | 安装包              | 下载                                                                                          |
+| :---------- | :---------------------- | :------------------ | :-------------------------------------------------------------------------------------------- |
+| **macOS**   | Apple Silicon（M 系列） | `LazyAnt-arm64.dmg` | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt-arm64.dmg) |
+| **macOS**   | Intel                   | `LazyAnt-x64.dmg`   | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt-x64.dmg)   |
+| **Windows** | 64 位                   | `LazyAnt-setup.exe` | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt-setup.exe) |
+| **Linux**   | 64 位                   | `LazyAnt.AppImage`  | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt.AppImage)  |
+| **Linux**   | Debian / Ubuntu         | `lazyant_amd64.deb` | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/lazyant_amd64.deb) |
+
+> 链接始终指向 **最新 Release**。若尚未发版，请先到 [Releases 页](https://github.com/rokiai/lazy-ant-app/releases) 查看；发版后上表链接即可直接下载。
+>
+> 当前安装包**尚未做 Apple 开发者签名 / 公证**，从网上下载后系统可能提示「无法验证开发者」，见下方安装说明。
+
+## 安装说明
+
+### macOS
+
+1. 按芯片下载对应 DMG：[Apple Silicon](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt-arm64.dmg) · [Intel](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt-x64.dmg)
+2. 打开 DMG，把 **LazyAnt** 拖进「应用程序」
+3. 从「应用程序」启动
+
+若提示「已损坏，无法打开」，在终端执行：
+
+```bash
+xattr -cr /Applications/LazyAnt.app
+open /Applications/LazyAnt.app
+```
+
+若提示「无法验证开发者」：右键 App →「打开」→ 再点「打开」；或在「系统设置 → 隐私与安全性」中点「仍要打开」。
+
+### Windows
+
+1. 运行 [LazyAnt-setup.exe](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt-setup.exe)
+2. 若出现 SmartScreen：点「更多信息」→「仍要运行」
+
+### Linux
+
+- **AppImage**：`chmod +x LazyAnt.AppImage && ./LazyAnt.AppImage`（[下载](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt.AppImage)）
+- **deb**：`sudo dpkg -i lazyant_amd64.deb`（[下载](https://github.com/rokiai/lazy-ant-app/releases/latest/download/lazyant_amd64.deb)，缺依赖时再 `sudo apt -f install`）
+
+---
+
 ## 这是什么
 
 **懒蚂蚁（LazyAnt）** 是面向内容创作者的桌面应用。从选题灵感、AI 写稿、排版预览，到同步各平台草稿箱——一条流水线在一个窗口里完成。
@@ -180,49 +225,6 @@ Markdown 长文稿写作，左侧编辑、右侧实时预览。支持封面块�
 ## 支持的平台
 
 掘金 · 微信公众号 · 知乎 · 语雀 · 百家号 · 小红书 · 微博 等（持续增加中）
-
-## 下载
-
-前往 **[GitHub Releases](https://github.com/rokiai/lazy-ant-app/releases/latest)** 获取最新版，或点击下方链接直接下载：
-
-| 系统        | 架构                    | 安装包              | 下载                                                                                          |
-| :---------- | :---------------------- | :------------------ | :-------------------------------------------------------------------------------------------- |
-| **macOS**   | Apple Silicon（M 系列） | `LazyAnt-arm64.dmg` | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt-arm64.dmg) |
-| **macOS**   | Intel                   | `LazyAnt-x64.dmg`   | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt-x64.dmg)   |
-| **Windows** | 64 位                   | `LazyAnt-setup.exe` | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt-setup.exe) |
-| **Linux**   | 64 位                   | `LazyAnt.AppImage`  | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt.AppImage)  |
-| **Linux**   | Debian / Ubuntu         | `lazyant_amd64.deb` | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/lazyant_amd64.deb) |
-
-> 链接始终指向 **最新 Release**。若尚未发版，请先到 [Releases 页](https://github.com/rokiai/lazy-ant-app/releases) 查看；发版后上表链接即可直接下载。
->
-> 当前安装包**尚未做 Apple 开发者签名 / 公证**，从网上下载后系统可能提示「无法验证开发者」，见下方安装说明。
-
-## 安装说明
-
-### macOS
-
-1. 按芯片下载对应 DMG：[Apple Silicon](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt-arm64.dmg) · [Intel](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt-x64.dmg)
-2. 打开 DMG，把 **LazyAnt** 拖进「应用程序」
-3. 从「应用程序」启动
-
-若提示「已损坏，无法打开」，在终端执行：
-
-```bash
-xattr -cr /Applications/LazyAnt.app
-open /Applications/LazyAnt.app
-```
-
-若提示「无法验证开发者」：右键 App →「打开」→ 再点「打开」；或在「系统设置 → 隐私与安全性」中点「仍要打开」。
-
-### Windows
-
-1. 运行 [LazyAnt-setup.exe](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt-setup.exe)
-2. 若出现 SmartScreen：点「更多信息」→「仍要运行」
-
-### Linux
-
-- **AppImage**：`chmod +x LazyAnt.AppImage && ./LazyAnt.AppImage`（[下载](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt.AppImage)）
-- **deb**：`sudo dpkg -i lazyant_amd64.deb`（[下载](https://github.com/rokiai/lazy-ant-app/releases/latest/download/lazyant_amd64.deb)，缺依赖时再 `sudo apt -f install`）
 
 ## 快速上手
 
