@@ -50,15 +50,153 @@ macOS · Windows · Linux
 
 ## 功能一览
 
-|                |                                                     |
-| :------------- | :-------------------------------------------------- |
-| **文章编辑**   | Markdown 长文稿，封面 / 目录 / 结构化排版，实时预览 |
-| **图文编辑**   | Markdown 拆卡，机型预览，导出 PNG 或直接发布        |
-| **主题库**     | 文章主题 + 图文主题，市场浏览、收藏、一键套用       |
-| **Skill 模板** | 提示词市场与我的模板，写作方法可复用                |
-| **自动化**     | 选 Skill → AI 生成 → 多平台发布，配置一次反复跑     |
-| **选题灵感**   | 多平台热榜聚合，快速找到值得写的题                  |
-| **账号管理**   | 发布平台与写作模型，集中授权与登录态检测            |
+|                |                                                        |
+| :------------- | :----------------------------------------------------- |
+| **文章编辑**   | Markdown 长文稿，封面 / 目录 / 结构化排版，实时预览    |
+| **图文编辑**   | Markdown 拆卡，机型预览，导出 PNG 或直接发布           |
+| **主题库**     | 文章主题 + 图文主题，市场浏览、收藏、一键套用          |
+| **Skill 模板** | 提示词市场与我的模板，写作方法可复用                   |
+| **自动化**     | 选 Skill → AI 生成 → 多平台发布，配置一次反复跑        |
+| **选题灵感**   | 多平台热榜聚合，快速找到值得写的题                     |
+| **账号管理**   | 发布平台与写作模型，集中授权与登录态检测               |
+| **MCP 接入**   | 供 Cursor、Codex 等外部 AI 客户端读写文稿、Skill、主题 |
+
+## MCP 接入（Cursor / Codex / Claude Desktop）
+
+LazyAnt 自带 **MCP Server**，让 [Cursor](https://cursor.com)、[OpenAI Codex](https://developers.openai.com/codex)、Claude Desktop 等外部 AI 客户端直接读写你本地的文章、图文、Skill 与个人主题——与桌面端共用同一份数据，写完可在 LazyAnt 里预览、排版、发布。
+
+### 能做什么
+
+| 能力         | 新建 | 修改 | MCP 工具                                                                                                      |
+| :----------- | :--: | :--: | :------------------------------------------------------------------------------------------------------------ |
+| **文章**     |  ✅  |  ✅  | `get_article_draft` / `save_article_draft`                                                                    |
+| **图文**     |  ✅  |  ✅  | `get_image_text_draft` / `save_image_text_draft`（`---` 分卡，至少 4 张卡）                                   |
+| **Skill**    |  ✅  |  ✅  | `list_workspace_skills` / `get_skill_pack` / `save_workspace_skill` / `remove_workspace_skill`                |
+| **文章主题** |  ✅  |  ✅  | `list_article_themes` / `get_article_theme` / `save_personal_article_theme` / `update_personal_article_theme` |
+| **图文主题** |  ✅  |  ✅  | `list_image_themes` / `get_image_theme` / `save_personal_image_theme` / `update_personal_image_theme`         |
+
+说明：
+
+- 文章与图文定稿写入 `workspace/articles/article-ready.json`，打开 LazyAnt 编辑器即可看到。
+- 个人主题写入 `workspace/themes/`，会自动同步到「我的主题」；市场内置主题可**浏览读取**，修改仅针对个人主题。
+- 平台发布、登录态检测等**不**通过 MCP 暴露。
+
+### 配置步骤（推荐：已安装 LazyAnt）
+
+1. 打开 LazyAnt → **设置** → **自动化**
+2. 点击 **「复制 MCP 配置」**（同时包含 **Cursor JSON** 与 **Codex TOML**，以及本机 `userData` 路径）
+3. 按你使用的客户端粘贴对应段落（见下方）
+4. 重启客户端，确认 `lazyant` 服务已连接
+
+#### Cursor / Claude Desktop
+
+粘贴 JSON 到 **Cursor → Settings → MCP**，或项目 `.cursor/mcp.json` / Claude Desktop 的 `claude_desktop_config.json`。
+
+macOS 安装包示例（路径以你复制的内容为准）：
+
+```json
+{
+  "mcpServers": {
+    "lazyant": {
+      "command": "/Applications/LazyAnt.app/Contents/Resources/lazyant-mcp",
+      "args": [],
+      "env": {
+        "LAZYANT_DATA_DIR": "/Users/你的用户名/Library/Application Support/LazyAnt"
+      }
+    }
+  }
+}
+```
+
+Windows 启动器为 `Resources\lazyant-mcp.cmd`；Linux 为 `resources/lazyant-mcp`。无需单独安装 Node / pnpm。
+
+#### OpenAI Codex
+
+Codex 使用 TOML，不是 JSON。将设置页复制的 **Codex 段落** 追加到：
+
+- 用户级：`~/.codex/config.toml`（全局生效）
+- 或项目级：`.codex/config.toml`（需 trusted project）
+
+macOS 安装包示例：
+
+```toml
+[mcp_servers.lazyant]
+command = "/Applications/LazyAnt.app/Contents/Resources/lazyant-mcp"
+args = []
+
+[mcp_servers.lazyant.env]
+LAZYANT_DATA_DIR = "/Users/你的用户名/Library/Application Support/LazyAnt"
+```
+
+也可用 Codex CLI 注册（`command` 后的 `--` 之后为启动器路径）：
+
+```bash
+codex mcp add lazyant -- /Applications/LazyAnt.app/Contents/Resources/lazyant-mcp
+```
+
+若 CLI 未写入 `LAZYANT_DATA_DIR`，请在 `config.toml` 的 `[mcp_servers.lazyant.env]` 中手动补上（与设置页复制内容一致）。
+
+保存后重启 Codex / 新开 `codex` 会话，在工具列表中应能看到 `lazyant` 的 16 个工具。
+
+### 从源码开发时
+
+在仓库根目录也可手动启动 MCP（或写入 Cursor / Codex 配置）：
+
+```bash
+LAZYANT_DATA_DIR="$HOME/Library/Application Support/LazyAnt" \
+  pnpm --filter @lazy-ant/desktop cli:mcp
+```
+
+**Cursor**（`.cursor/mcp.json`）：
+
+```json
+{
+  "mcpServers": {
+    "lazyant": {
+      "command": "pnpm",
+      "args": ["--filter", "@lazy-ant/desktop", "cli:mcp"],
+      "env": {
+        "LAZYANT_DATA_DIR": "/Users/你的用户名/Library/Application Support/LazyAnt"
+      }
+    }
+  }
+}
+```
+
+**Codex**（`~/.codex/config.toml`）：
+
+```toml
+[mcp_servers.lazyant]
+command = "pnpm"
+args = ["--filter", "@lazy-ant/desktop", "cli:mcp"]
+
+[mcp_servers.lazyant.env]
+LAZYANT_DATA_DIR = "/Users/你的用户名/Library/Application Support/LazyAnt"
+```
+
+`LAZYANT_DATA_DIR` 须指向与桌面端相同的用户数据目录（macOS 默认 `~/Library/Application Support/LazyAnt`）。
+
+### 使用示例
+
+在 Cursor / Codex 里可以让 AI 调用工具，例如：
+
+- 「用 `save_article_draft` 写一篇关于 LazyAnt 的公众号稿」
+- 「读取当前图文定稿，把第三张卡改短一点再保存」
+- 「新建一个 Skill，SKILL.md 里写小红书种草笔记结构」
+- 「基于摸鱼绿主题风格，生成一套个人文章主题 CSS 并保存」
+
+保存图文时，`content` 须用独立行的 `---` 分隔卡片，至少 4 张卡，`tags` 恰好 3 个话题（不要加 `#`）：
+
+```json
+{
+  "title": "笔记标题",
+  "digest": "八十到一百字摘要",
+  "content": "开头钩子\n\n---\n\n经历分享\n\n---\n\n三个方法\n\n---\n\n结尾提问",
+  "tags": ["效率工具", "职场干货", "个人成长"]
+}
+```
+
+更完整的工具说明与数据路径见 [MCP Server 文档](./apps/desktop/docs/MCP-Server.md)。
 
 ## 文章编辑
 
@@ -203,6 +341,7 @@ Markdown 长文稿写作，左侧编辑、右侧实时预览。支持封面块�
 2. 在「模型」里授权写作用的 AI（如豆包、Kimi）
 3. 从首页进入「发文章」或「做图文」，选主题、写内容、预览定稿
 4. 点「发布」同步到平台草稿箱，或在「自动」里配置 Skill 流水线
+5. （可选）在 Cursor 中配置 LazyAnt MCP，让外部 AI 直接读写本地文稿与主题，见上文 [MCP 接入](#mcp-接入cursor--claude-desktop)
 
 ## 安装说明
 
