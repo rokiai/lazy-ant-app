@@ -67,8 +67,9 @@ LazyAnt 自带 **MCP Server**，让 [Cursor](https://cursor.com)、[OpenAI Codex
 
 ### 能做什么
 
-| 能力         | 新建 | 修改 | MCP 工具                                                                                                      |
+| 能力         | 新建 | 修改 | MCP 入口                                                                                                      |
 | :----------- | :--: | :--: | :------------------------------------------------------------------------------------------------------------ |
+| **规范**     |  —   |  —   | **Prompt** `写文章` 等（推荐）；或 Resource / `get_*_spec`                                                    |
 | **文章**     |  ✅  |  ✅  | `get_article_draft` / `save_article_draft`                                                                    |
 | **图文**     |  ✅  |  ✅  | `get_image_text_draft` / `save_image_text_draft`（`---` 分卡，至少 4 张卡）                                   |
 | **Skill**    |  ✅  |  ✅  | `list_workspace_skills` / `get_skill_pack` / `save_workspace_skill` / `remove_workspace_skill`                |
@@ -78,6 +79,7 @@ LazyAnt 自带 **MCP Server**，让 [Cursor](https://cursor.com)、[OpenAI Codex
 说明：
 
 - 文章与图文定稿写入 `workspace/articles/article-ready.json`，打开 LazyAnt 编辑器即可看到。
+- **写前先读规范**：优先用 MCP Prompt `写文章` 等；或 `get_*_spec` / Resource `lazyant://spec/...`。
 - 个人主题写入 `workspace/themes/`，会自动同步到「我的主题」；市场内置主题可**浏览读取**，修改仅针对个人主题。
 - 平台发布、登录态检测等**不**通过 MCP 暴露。
 
@@ -136,7 +138,7 @@ codex mcp add lazyant -- /Applications/LazyAnt.app/Contents/Resources/lazyant-mc
 
 若 CLI 未写入 `LAZYANT_DATA_DIR`，请在 `config.toml` 的 `[mcp_servers.lazyant.env]` 中手动补上（与设置页复制内容一致）。
 
-保存后重启 Codex / 新开 `codex` 会话，在工具列表中应能看到 `lazyant` 的 16 个工具。
+保存后重启 Codex / 新开 `codex` 会话，在工具列表中应能看到 `lazyant` 的 20 个工具。
 
 ### 从源码开发时
 
