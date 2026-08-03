@@ -84,8 +84,8 @@ LazyAnt 自带 **MCP Server**，让 [Cursor](https://cursor.com)、[OpenAI Codex
 ### 配置步骤（推荐：已安装 LazyAnt）
 
 1. 打开 LazyAnt → **设置** → **自动化**
-2. 点击 **「复制 MCP 配置」**（同时包含 **Cursor JSON** 与 **Codex TOML**，以及本机 `userData` 路径）
-3. 按你使用的客户端粘贴对应段落（见下方）
+2. 按客户端点击 **「复制 Cursor 配置」** 或 **「复制 Codex 配置」**（已含本机 `userData` 路径与当前系统启动器）
+3. 粘贴到对应客户端（见下方）
 4. 重启客户端，确认 `lazyant` 服务已连接
 
 #### Cursor / Claude Desktop
@@ -112,7 +112,7 @@ Windows 启动器为 `Resources\lazyant-mcp.cmd`；Linux 为 `resources/lazyant-
 
 #### OpenAI Codex
 
-Codex 使用 TOML，不是 JSON。将设置页复制的 **Codex 段落** 追加到：
+Codex 使用 TOML，不是 JSON。点击 **「复制 Codex 配置」** 后追加到：
 
 - 用户级：`~/.codex/config.toml`（全局生效）
 - 或项目级：`.codex/config.toml`（需 trusted project）
@@ -140,21 +140,21 @@ codex mcp add lazyant -- /Applications/LazyAnt.app/Contents/Resources/lazyant-mc
 
 ### 从源码开发时
 
-在仓库根目录也可手动启动 MCP（或写入 Cursor / Codex 配置）：
+在仓库根目录（开发专用，需本机已装 pnpm）：
 
 ```bash
 LAZYANT_DATA_DIR="$HOME/Library/Application Support/LazyAnt" \
   pnpm --filter @lazy-ant/desktop cli:mcp
 ```
 
-**Cursor**（`.cursor/mcp.json`）：
+**Cursor**（`.cursor/mcp.json`，开发态）：
 
 ```json
 {
   "mcpServers": {
     "lazyant": {
       "command": "pnpm",
-      "args": ["--filter", "@lazy-ant/desktop", "cli:mcp"],
+      "args": ["--dir", "/你的路径/lazy-ant/apps/desktop", "cli:mcp"],
       "env": {
         "LAZYANT_DATA_DIR": "/Users/你的用户名/Library/Application Support/LazyAnt"
       }
@@ -163,18 +163,18 @@ LAZYANT_DATA_DIR="$HOME/Library/Application Support/LazyAnt" \
 }
 ```
 
-**Codex**（`~/.codex/config.toml`）：
+**Codex**（`~/.codex/config.toml`，开发态）：
 
 ```toml
 [mcp_servers.lazyant]
 command = "pnpm"
-args = ["--filter", "@lazy-ant/desktop", "cli:mcp"]
+args = ["--dir", "/你的路径/lazy-ant/apps/desktop", "cli:mcp"]
 
 [mcp_servers.lazyant.env]
 LAZYANT_DATA_DIR = "/Users/你的用户名/Library/Application Support/LazyAnt"
 ```
 
-`LAZYANT_DATA_DIR` 须指向与桌面端相同的用户数据目录（macOS 默认 `~/Library/Application Support/LazyAnt`）。
+已安装 LazyAnt 的正式用户请用设置页 **「复制 Cursor 配置」**（指向 `lazyant-mcp`，无需 Node / pnpm）。
 
 ### 使用示例
 
