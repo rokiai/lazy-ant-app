@@ -18,7 +18,6 @@
 ### 发布
 
 - CI 构建步骤改为完整 `build:app`，并增加 CLI / MCP bundle 打包校验
-- CI `build:app` 提高 Node 堆内存上限，避免 ubuntu runner OOM
 
 ## [1.3.1] - 2026-08-04
 
