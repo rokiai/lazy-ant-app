@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="./assets/icon.png" alt="LazyAnt" width="128" />
+<img src="./assets/icon.png" alt="懒蚂蚁" width="128" />
 
-# 懒蚂蚁 · LazyAnt
+# 懒蚂蚁
 
 **Skill 驱动写作 · 文章与图文 · 多平台发布**
 
@@ -18,10 +18,10 @@ macOS · Windows · Linux
 
 | 系统        | 架构                    | 安装包              | 下载                                                                                          |
 | :---------- | :---------------------- | :------------------ | :-------------------------------------------------------------------------------------------- |
-| **macOS**   | Apple Silicon（M 系列） | `LazyAnt-arm64.dmg` | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt-arm64.dmg) |
-| **macOS**   | Intel                   | `LazyAnt-x64.dmg`   | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt-x64.dmg)   |
-| **Windows** | 64 位                   | `LazyAnt-setup.exe` | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt-setup.exe) |
-| **Linux**   | 64 位                   | `LazyAnt.AppImage`  | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt.AppImage)  |
+| **macOS**   | Apple Silicon（M 系列） | `懒蚂蚁-arm64.dmg`  | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-arm64.dmg)  |
+| **macOS**   | Intel                   | `懒蚂蚁-x64.dmg`    | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-x64.dmg)    |
+| **Windows** | 64 位                   | `懒蚂蚁-setup.exe`  | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-setup.exe)  |
+| **Linux**   | 64 位                   | `懒蚂蚁.AppImage`   | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁.AppImage)   |
 | **Linux**   | Debian / Ubuntu         | `lazyant_amd64.deb` | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/lazyant_amd64.deb) |
 
 > 链接指向最新 Release。macOS 安装包尚未签名，若提示「无法验证开发者」见文末 [安装说明](#安装说明)。
@@ -150,11 +150,11 @@ macOS · Windows · Linux
 2. 在「模型」里授权写作用的 AI（如豆包、Kimi）
 3. 从首页进入「发文章」或「做图文」，选主题、写内容、预览定稿
 4. 点「发布」同步到平台草稿箱，或在「自动」里配置 Skill 流水线
-5. （可选）在 Cursor 中配置 LazyAnt MCP，见下文 [MCP 接入](#mcp-接入cursor--codex--claude-desktop)
+5. （可选）在 Cursor 中配置懒蚂蚁 MCP，见下文 [MCP 接入](#mcp-接入cursor--codex--claude-desktop)
 
 ## MCP 接入（Cursor / Codex / Claude Desktop）
 
-LazyAnt 自带 **MCP Server**，让 [Cursor](https://cursor.com)、[OpenAI Codex](https://developers.openai.com/codex)、Claude Desktop 等外部 AI 客户端直接读写你本地的文章、图文、Skill 与个人主题——与桌面端共用同一份数据，写完可在 LazyAnt 里预览、排版、发布。
+懒蚂蚁自带 **MCP Server**，让 [Cursor](https://cursor.com)、[OpenAI Codex](https://developers.openai.com/codex)、Claude Desktop 等外部 AI 客户端直接读写你本地的文章、图文、Skill 与个人主题——与桌面端共用同一份数据，写完可在懒蚂蚁里预览、排版、发布。
 
 ### 能做什么
 
@@ -169,14 +169,14 @@ LazyAnt 自带 **MCP Server**，让 [Cursor](https://cursor.com)、[OpenAI Codex
 
 说明：
 
-- 文章与图文定稿写入 `workspace/articles/article-ready.json`，打开 LazyAnt 编辑器即可看到。
+- 文章与图文定稿写入 `workspace/articles/article-ready.json`，打开懒蚂蚁编辑器即可看到。
 - **写前先读规范**：优先用 MCP Prompt `写文章` 等；或 `get_*_spec` / Resource `lazyant://spec/...`。
 - 个人主题写入 `workspace/themes/`，会自动同步到「我的主题」；市场内置主题可**浏览读取**，修改仅针对个人主题。
 - 平台发布、登录态检测等**不**通过 MCP 暴露。
 
-### 配置步骤（推荐：已安装 LazyAnt）
+### 配置步骤（推荐：已安装懒蚂蚁）
 
-1. 打开 LazyAnt → **设置** → **自动化**
+1. 打开懒蚂蚁 → **设置** → **自动化**
 2. 按客户端点击 **「复制 Cursor 配置」** 或 **「复制 Codex 配置」**（已含本机 `userData` 路径与当前系统启动器）
 3. 粘贴到对应客户端（见下方）
 4. 重启客户端，确认 `lazyant` 服务已连接
@@ -191,10 +191,10 @@ macOS 安装包示例（路径以你复制的内容为准）：
 {
   "mcpServers": {
     "lazyant": {
-      "command": "/Applications/LazyAnt.app/Contents/Resources/lazyant-mcp",
+      "command": "/Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp",
       "args": [],
       "env": {
-        "LAZYANT_DATA_DIR": "/Users/你的用户名/Library/Application Support/LazyAnt"
+        "LAZYANT_DATA_DIR": "/Users/你的用户名/Library/Application Support/懒蚂蚁"
       }
     }
   }
@@ -214,17 +214,17 @@ macOS 安装包示例：
 
 ```toml
 [mcp_servers.lazyant]
-command = "/Applications/LazyAnt.app/Contents/Resources/lazyant-mcp"
+command = "/Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp"
 args = []
 
 [mcp_servers.lazyant.env]
-LAZYANT_DATA_DIR = "/Users/你的用户名/Library/Application Support/LazyAnt"
+LAZYANT_DATA_DIR = "/Users/你的用户名/Library/Application Support/懒蚂蚁"
 ```
 
 也可用 Codex CLI 注册（`command` 后的 `--` 之后为启动器路径）：
 
 ```bash
-codex mcp add lazyant -- /Applications/LazyAnt.app/Contents/Resources/lazyant-mcp
+codex mcp add lazyant -- /Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp
 ```
 
 若 CLI 未写入 `LAZYANT_DATA_DIR`，请在 `config.toml` 的 `[mcp_servers.lazyant.env]` 中手动补上（与设置页复制内容一致）。
@@ -236,7 +236,7 @@ codex mcp add lazyant -- /Applications/LazyAnt.app/Contents/Resources/lazyant-mc
 在仓库根目录（开发专用，需本机已装 pnpm）：
 
 ```bash
-LAZYANT_DATA_DIR="$HOME/Library/Application Support/LazyAnt" \
+LAZYANT_DATA_DIR="$HOME/Library/Application Support/懒蚂蚁" \
   pnpm --filter @lazy-ant/desktop cli:mcp
 ```
 
@@ -249,7 +249,7 @@ LAZYANT_DATA_DIR="$HOME/Library/Application Support/LazyAnt" \
       "command": "pnpm",
       "args": ["--dir", "/你的路径/lazy-ant/apps/desktop", "cli:mcp"],
       "env": {
-        "LAZYANT_DATA_DIR": "/Users/你的用户名/Library/Application Support/LazyAnt"
+        "LAZYANT_DATA_DIR": "/Users/你的用户名/Library/Application Support/懒蚂蚁"
       }
     }
   }
@@ -264,16 +264,16 @@ command = "pnpm"
 args = ["--dir", "/你的路径/lazy-ant/apps/desktop", "cli:mcp"]
 
 [mcp_servers.lazyant.env]
-LAZYANT_DATA_DIR = "/Users/你的用户名/Library/Application Support/LazyAnt"
+LAZYANT_DATA_DIR = "/Users/你的用户名/Library/Application Support/懒蚂蚁"
 ```
 
-已安装 LazyAnt 的正式用户请用设置页 **「复制 Cursor 配置」**（指向 `lazyant-mcp`，无需 Node / pnpm）。
+已安装懒蚂蚁的正式用户请用设置页 **「复制 Cursor 配置」**（指向 `lazyant-mcp`，无需 Node / pnpm）。
 
 ### 使用示例
 
 在 Cursor / Codex 里可以让 AI 调用工具，例如：
 
-- 「用 `save_article_draft` 写一篇关于 LazyAnt 的公众号稿」
+- 「用 `save_article_draft` 写一篇关于懒蚂蚁的公众号稿」
 - 「读取当前图文定稿，把第三张卡改短一点再保存」
 - 「新建一个 Skill，SKILL.md 里写小红书种草笔记结构」
 - 「基于摸鱼绿主题风格，生成一套个人文章主题 CSS 并保存」
@@ -299,34 +299,34 @@ LAZYANT_DATA_DIR = "/Users/你的用户名/Library/Application Support/LazyAnt"
 
 ### macOS
 
-1. 按芯片下载对应 DMG：[Apple Silicon](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt-arm64.dmg) · [Intel](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt-x64.dmg)
-2. 打开 DMG，把 **LazyAnt** 拖进「应用程序」
+1. 按芯片下载对应 DMG：[Apple Silicon](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-arm64.dmg) · [Intel](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-x64.dmg)
+2. 打开 DMG，把 **懒蚂蚁** 拖进「应用程序」
 3. 从「应用程序」启动
 
 若提示「已损坏，无法打开」，在终端执行：
 
 ```bash
-xattr -cr /Applications/LazyAnt.app
-open /Applications/LazyAnt.app
+xattr -cr /Applications/懒蚂蚁.app
+open /Applications/懒蚂蚁.app
 ```
 
 若提示「无法验证开发者」：右键 App →「打开」→ 再点「打开」；或在「系统设置 → 隐私与安全性」中点「仍要打开」。
 
 ### Windows
 
-1. 运行 [LazyAnt-setup.exe](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt-setup.exe)
+1. 运行 [懒蚂蚁-setup.exe](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-setup.exe)
 2. 若出现 SmartScreen：点「更多信息」→「仍要运行」
 
 ### Linux
 
-- **AppImage**：`chmod +x LazyAnt.AppImage && ./LazyAnt.AppImage`（[下载](https://github.com/rokiai/lazy-ant-app/releases/latest/download/LazyAnt.AppImage)）
+- **AppImage**：`chmod +x 懒蚂蚁.AppImage && ./懒蚂蚁.AppImage`（[下载](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁.AppImage)）
 - **deb**：`sudo dpkg -i lazyant_amd64.deb`（[下载](https://github.com/rokiai/lazy-ant-app/releases/latest/download/lazyant_amd64.deb)，缺依赖时再 `sudo apt -f install`）
 
 ## 免责声明
 
-LazyAnt 源码与安装包**仅供学习、研究与技术交流**，由开发者**免费提供**，不收取软件使用费。你可在遵守本声明及相关开源协议的前提下阅读、本地运行与二次开发；**不得**将本软件或其修改版用于商业销售、收费分发、代运营转售、捆绑售卖等营利行为，亦不得冒用本项目名义收费或提供付费「官方」服务（除非获得权利人书面授权）。
+懒蚂蚁源码与安装包**仅供学习、研究与技术交流**，由开发者**免费提供**，不收取软件使用费。你可在遵守本声明及相关开源协议的前提下阅读、本地运行与二次开发；**不得**将本软件或其修改版用于商业销售、收费分发、代运营转售、捆绑售卖等营利行为，亦不得冒用本项目名义收费或提供付费「官方」服务（除非获得权利人书面授权）。
 
-LazyAnt 仍处于快速迭代阶段，按「现状」提供，不构成任何明示或默示的保证。使用前请知悉并自行承担相关风险：
+懒蚂蚁仍处于快速迭代阶段，按「现状」提供，不构成任何明示或默示的保证。使用前请知悉并自行承担相关风险：
 
 1. **开源与学习用途**：本仓库旨在分享桌面端内容工具的实现思路，不承诺长期维护、技术支持或功能完备。Fork、借鉴请自行评估合规性与维护成本；市场内置 Skill、主题等资源可能含第三方或上游许可，二次分发时请一并遵守其版权与许可条款。
 2. **软件稳定性**：功能、界面、数据格式可能随版本更新发生变化；请勿将本软件作为唯一或关键业务数据的唯一存储与备份手段，重要内容请自行留存副本。

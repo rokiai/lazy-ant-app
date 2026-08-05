@@ -1,6 +1,6 @@
 # 更新日志
 
-本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/) 格式。桌面端 LazyAnt 默认读取项目根目录的此文件。
+本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/) 格式。桌面端懒蚂蚁默认读取项目根目录的此文件。
 
 ## [Unreleased]
 
@@ -26,7 +26,7 @@
 
 - **图文主题**：全部主题适配新增结构；封面只展示一处品牌，内容导览固定为单行横向滚动
 - **发布流程**：勾选发布账号后立即展开所需字段，取消勾选后自动收起；账号确认提前到图片导出之前
-- **语法帮助**：补充 LazyAnt 高级语法示例，并优化文章与图文 Skill 模板名称
+- **语法帮助**：补充懒蚂蚁高级语法示例，并优化文章与图文 Skill 模板名称
 
 ### 修复
 
@@ -174,6 +174,6 @@
 
 ### 新增
 
-- Electron 桌面端 LazyAnt：Skill 驱动写作 + Markdown 编辑器
+- Electron 桌面端懒蚂蚁：Skill 驱动写作 + Markdown 编辑器
 - CLI：`run` / `publish` 与掘金、公众号、知乎适配器
 - 内置 Skill：`hot-news-writer`
