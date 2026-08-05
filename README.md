@@ -177,9 +177,9 @@ macOS · Windows · Linux
 ### 配置步骤（推荐：已安装懒蚂蚁）
 
 1. 打开懒蚂蚁 → **设置** → **自动化**
-2. 按客户端点击 **「复制 Cursor 配置」** 或 **「复制 Codex 配置」**（已含本机 `userData` 路径与当前系统启动器）
+2. 在首页点击 Cursor、Codex 或 WorkBuddy，打开对应教程，再点 **「复制 MCP 配置」**（已含本机 `userData` 路径与当前系统启动器）
 3. 粘贴到对应客户端（见下方）
-4. 重启客户端，确认 `lazyant` 服务已连接
+4. 重启客户端，确认「懒蚂蚁」服务已连接
 
 #### Cursor / Claude Desktop
 
@@ -190,7 +190,7 @@ macOS 安装包示例（路径以你复制的内容为准）：
 ```json
 {
   "mcpServers": {
-    "lazyant": {
+    "懒蚂蚁": {
       "command": "/Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp",
       "args": [],
       "env": {
@@ -205,7 +205,7 @@ Windows 启动器为 `Resources\lazyant-mcp.cmd`；Linux 为 `resources/lazyant-
 
 #### OpenAI Codex
 
-Codex 使用 TOML，不是 JSON。点击 **「复制 Codex 配置」** 后追加到：
+Codex 使用 TOML，不是 JSON。在首页打开 Codex 教程并点击 **「复制 MCP 配置」** 后追加到：
 
 - 用户级：`~/.codex/config.toml`（全局生效）
 - 或项目级：`.codex/config.toml`（需 trusted project）
@@ -213,23 +213,23 @@ Codex 使用 TOML，不是 JSON。点击 **「复制 Codex 配置」** 后追加
 macOS 安装包示例：
 
 ```toml
-[mcp_servers.lazyant]
+[mcp_servers."懒蚂蚁"]
 command = "/Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp"
 args = []
 
-[mcp_servers.lazyant.env]
+[mcp_servers."懒蚂蚁".env]
 LAZYANT_DATA_DIR = "/Users/你的用户名/Library/Application Support/懒蚂蚁"
 ```
 
 也可用 Codex CLI 注册（`command` 后的 `--` 之后为启动器路径）：
 
 ```bash
-codex mcp add lazyant -- /Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp
+codex mcp add "懒蚂蚁" -- /Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp
 ```
 
-若 CLI 未写入 `LAZYANT_DATA_DIR`，请在 `config.toml` 的 `[mcp_servers.lazyant.env]` 中手动补上（与设置页复制内容一致）。
+若 CLI 未写入 `LAZYANT_DATA_DIR`，请在 `config.toml` 的 `[mcp_servers."懒蚂蚁".env]` 中手动补上（与首页教程复制内容一致）。
 
-保存后重启 Codex / 新开 `codex` 会话，在工具列表中应能看到 `lazyant` 的 20 个工具。
+保存后重启 Codex / 新开 `codex` 会话，在工具列表中应能看到「懒蚂蚁」的工具。
 
 ### 从源码开发时
 
@@ -245,7 +245,7 @@ LAZYANT_DATA_DIR="$HOME/Library/Application Support/懒蚂蚁" \
 ```json
 {
   "mcpServers": {
-    "lazyant": {
+    "懒蚂蚁": {
       "command": "pnpm",
       "args": ["--dir", "/你的路径/lazy-ant/apps/desktop", "cli:mcp"],
       "env": {
@@ -259,15 +259,15 @@ LAZYANT_DATA_DIR="$HOME/Library/Application Support/懒蚂蚁" \
 **Codex**（`~/.codex/config.toml`，开发态）：
 
 ```toml
-[mcp_servers.lazyant]
+[mcp_servers."懒蚂蚁"]
 command = "pnpm"
 args = ["--dir", "/你的路径/lazy-ant/apps/desktop", "cli:mcp"]
 
-[mcp_servers.lazyant.env]
+[mcp_servers."懒蚂蚁".env]
 LAZYANT_DATA_DIR = "/Users/你的用户名/Library/Application Support/懒蚂蚁"
 ```
 
-已安装懒蚂蚁的正式用户请用设置页 **「复制 Cursor 配置」**（指向 `lazyant-mcp`，无需 Node / pnpm）。
+已安装懒蚂蚁的正式用户请从首页打开对应客户端教程，再点 **「复制 MCP 配置」**（指向 `lazyant-mcp`，无需 Node / pnpm）。
 
 ### 使用示例
 
