@@ -289,7 +289,7 @@ LAZYANT_DATA_DIR = "/Users/你的用户名/Library/Application Support/懒蚂蚁
 }
 ```
 
-更完整的工具说明与数据路径见 [MCP Server 文档](./apps/desktop/docs/MCP-Server.md)。
+更完整的工具说明与数据路径见 [MCP Server 文档](./docs/MCP-Server.md)。
 
 ## 支持的平台
 
