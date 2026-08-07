@@ -1,26 +1,20 @@
 # 懒蚂蚁 MCP Server
 
-懒蚂蚁对外提供 MCP Server（stdio），供 [Cursor](https://cursor.com)、[OpenAI Codex](https://developers.openai.com/codex)、Claude Desktop 等客户端连接，读写文章、图文、Skill 与主题。
+懒蚂蚁提供本地 stdio MCP Server，供 Cursor、Codex、WorkBuddy 等客户端读写 Markdown 草稿、主题和「我的模板」Skill。完整模块与 Tool 契约见 [MCP Server README](../apps/desktop/src/mcp-server/README.md)。
 
-## 启动方式
+## 启动与配置
 
-### 开发 / 源码仓库
+### 安装包用户
 
-在仓库根目录（开发专用，需本机已装 pnpm）：
+在懒蚂蚁首页打开客户端教程，使用「复制 MCP 配置」。启动器位于：
 
-```bash
-LAZYANT_DATA_DIR="$HOME/Library/Application Support/懒蚂蚁" \
-  pnpm --filter @lazy-ant/desktop cli:mcp
-```
+- macOS：`/Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp`
+- Windows：安装目录 `resources\lazyant-mcp.cmd`
+- Linux：安装目录 `resources/lazyant-mcp`
 
-### 正式安装包（DMG / 安装程序）
+启动器通过 `ELECTRON_RUN_AS_NODE` 运行 `Resources/mcp/stdio.js`，并与桌面端共用 userData。
 
-安装懒蚂蚁后无需 Node / pnpm。在首页点击客户端打开教程，再点 **「复制 MCP 配置」**：
-
-- **Cursor / WorkBuddy**：复制 JSON，粘贴到对应 MCP 设置
-- **Codex**：复制 TOML，追加到 `~/.codex/config.toml`
-
-Cursor 示例：
+Cursor 配置示例：
 
 ```json
 {
@@ -36,30 +30,31 @@ Cursor 示例：
 }
 ```
 
-启动器通过 `ELECTRON_RUN_AS_NODE` 运行打包在 `Resources/mcp/stdio.js` 的 MCP Server，与桌面端共用同一份 `userData` 与市场主题资源。
+Codex 配置示例：
 
-Windows 对应 `Resources\lazyant-mcp.cmd`；Linux 对应 `resources/lazyant-mcp`。
+```toml
+[mcp_servers."懒蚂蚁"]
+command = "/Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp"
+args = []
 
-### 打包与 CI
+[mcp_servers."懒蚂蚁".env]
+LAZYANT_DATA_DIR = "/Users/you/Library/Application Support/懒蚂蚁"
+```
 
-发版流水线**会一起打 MCP**进安装包，无需单独步骤：
+也可使用：
 
-1. `pnpm run build:app` → 末尾执行 `build:mcp`（`vite` 打出 `out/mcp/stdio.js`）
-2. `electron-builder` 通过 `extraResources` 复制：
-   - `out/mcp/` → `Resources/mcp/`
-   - `build/lazyant-mcp`（及 `.cmd`）→ `Resources/lazyant-mcp`
+```bash
+codex mcp add "懒蚂蚁" -- /Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp
+```
 
-日常 CI（`.github/workflows/ci.yml`）也会跑 `build:mcp`，避免 MCP 打包回归拖到发版才发现。Release workflow 的 `build:app` 同样包含上述步骤。
+### 源码开发
 
-## 在 Cursor 中配置
+```bash
+LAZYANT_DATA_DIR="$HOME/Library/Application Support/懒蚂蚁" \
+  pnpm --filter @lazy-ant/desktop cli:mcp
+```
 
-1. 打开懒蚂蚁首页 → 点击 **Cursor** → **复制 MCP 配置**
-2. 粘贴到 Cursor MCP 设置或项目 `.cursor/mcp.json`
-3. 重启 Cursor，确认「懒蚂蚁」已连接
-
-### 开发态（源码仓库）
-
-若从源码开发，可在 Cursor **Settings → MCP** 或项目 `.cursor/mcp.json` 中添加：
+Cursor 开发配置：
 
 ```json
 {
@@ -75,235 +70,99 @@ Windows 对应 `Resources\lazyant-mcp.cmd`；Linux 对应 `resources/lazyant-mcp
 }
 ```
 
-**正式用户请优先从首页打开对应客户端教程后复制配置**（安装包指向 `lazyant-mcp` 启动器），不要手抄开发态的 `pnpm` 命令。
+构建安装包时，`build:app` 会调用 `build:mcp`；`electron-builder` 将 `out/mcp/` 和启动器复制到 `Resources/`。stdio 的 stdout 只承载协议数据，不能输出调试日志。
 
-## 在 OpenAI Codex 中配置
+## 通用工作流
 
-Codex（CLI / IDE 扩展）通过 **TOML** 注册 MCP，配置文件为 `~/.codex/config.toml` 或项目 `.codex/config.toml`。
+所有客户端都按 Tool / Resource 工作：先读取对应 `get_*_spec` 或 Resource，再按用户意图调用 create 或 update。客户端未展示 MCP Prompt 时，不影响这条流程。
 
-### 安装包用户（推荐）
+支持 MCP Prompt 的客户端可额外展示以下快捷入口；它们会在模型生成前注入对应规范，但不是 MCP 的唯一工作路径：
 
-1. 懒蚂蚁首页 → 点击 **Codex** → **复制 MCP 配置**
-2. 将剪贴板内容追加到 `~/.codex/config.toml`（若已有 `[mcp_servers."懒蚂蚁"]`，先删掉旧表再粘贴）
-3. 保存后重启 Codex / 新开 `codex` 会话
+| Prompt                 | 落盘 Tool                                              |
+| ---------------------- | ------------------------------------------------------ |
+| `write_article`        | `create_article_draft` 或 `update_article_draft`       |
+| `write_image_text`     | `create_image_text_draft` 或 `update_image_text_draft` |
+| `create_article_theme` | `create_article_theme` 或 `update_article_theme`       |
+| `create_image_theme`   | `create_image_theme` 或 `update_image_theme`           |
 
-macOS 示例：
+用户在 `/write_article`、`/write_image_text` 等文字后同一条消息中写的要求、素材和正文，都属于本次需求；文字本身不是可自动执行的 Tool 命令。客户端未提供 Prompt，或未传 `brief` 时，Agent 直接使用同条用户消息作为要求，读取 `get_*_spec` 后继续执行，不应中断。
 
-```toml
-[mcp_servers."懒蚂蚁"]
-command = "/Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp"
-args = []
+可读取以下 Resource，效果等同对应 `get_*_spec` Tool：
 
-[mcp_servers."懒蚂蚁".env]
-LAZYANT_DATA_DIR = "/Users/you/Library/Application Support/懒蚂蚁"
-```
+| Resource                             | 说明               |
+| ------------------------------------ | ------------------ |
+| `lazyant://spec/article-markdown`    | 文章 Markdown 语法 |
+| `lazyant://spec/image-text-markdown` | 图文 Markdown 语法 |
+| `lazyant://spec/article-theme`       | 文章主题 CSS 规范  |
+| `lazyant://spec/image-theme`         | 图文主题 CSS 规范  |
 
-Windows：`command` 指向安装目录 `resources\lazyant-mcp.cmd`。  
-Linux：`resources/lazyant-mcp`。
+## 多篇草稿
 
-### CLI 快捷注册
+- 用户要求写一篇、再写一篇或换选题时，调用 `create_*_draft`。每次都返回新的 `draftId`，同一会话可以有多篇。
+- 用户要求修改、润色、续写或基于现有文章时，已知 `draftId` 就 `get_*_draft` 后携带 `revision` 调用 `update_*_draft`。
+- 只有目标 `draftId` 未知时才 `search_*_drafts`；必须提供 `query`，每页最多 20 篇。
+- `draftId` 是唯一文章身份。MCP 不用会话、`taskId`、当前稿或 `article-ready.json` 推断目标。
+- MCP 草稿只使用 Markdown `content`，不会读取或写入 `contentHtml`、主题色、主题引用或发布自动化数据。
 
-```bash
-codex mcp add "懒蚂蚁" -- /Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp
-```
+`revision` 是乐观并发控制版本。另一个 Agent 或编辑器先完成写入时，旧 revision 会被拒绝；应重新读取目标草稿后再更新。
 
-注册后检查 `~/.codex/config.toml`，确认存在 `[mcp_servers."懒蚂蚁".env]` 且 `LAZYANT_DATA_DIR` 与懒蚂蚁数据目录一致；缺失则手动补上。
+## Skill 选择与管理
 
-### 开发态（源码仓库）
+先确定内容：链接先读取完整正文，粘贴素材先读完，只有选题时先明确受众和核心要点。内容确定前，不能因为“公众号”“财经”等词提前选择 Skill。
 
-```toml
-[mcp_servers."懒蚂蚁"]
-command = "pnpm"
-args = ["--dir", "/path/to/lazy-ant/apps/desktop", "cli:mcp"]
+内容确定后，使用 `search_workspace_skills(query)` 搜索「我的模板」轻量摘要，再以 `get_workspace_skill(skillId)` 读取选中包。自动写作不会读取市场 Skill 或 `~/.agents/skills`；没有合适模板时直接按 Markdown 规范写作。
 
-[mcp_servers."懒蚂蚁".env]
-LAZYANT_DATA_DIR = "/Users/you/Library/Application Support/懒蚂蚁"
-```
+模板写入使用显式 create/update/delete：
 
-也可：
+| Tool                     | 规则                                                           |
+| ------------------------ | -------------------------------------------------------------- |
+| `create_workspace_skill` | 新建包；必须一次性提供包含 `SKILL.md` 的 `files`，不覆盖同名包 |
+| `update_workspace_skill` | 先 get，再传整包 `revision`、`path` 和 `content` 或 `edits`    |
+| `delete_workspace_skill` | 仅在用户明确要求删除时调用，必须带最新整包 `revision`          |
 
-```bash
-codex mcp add "懒蚂蚁" -- pnpm --dir /path/to/lazy-ant/apps/desktop cli:mcp
-```
+`skill-packs` 是权威目录。`~/.agents/skills` 只是启动及模板变更后的镜像，由同步服务对齐和清理；它不参与 MCP 搜索、读取或更新。
 
-并在 `config.toml` 中补上 `LAZYANT_DATA_DIR` 环境变量。
+## 主题管理
 
-### 验证
+主题工具采用 `search → get → update`：
 
-在 Codex 中发起对话，要求列出懒蚂蚁工具；工具列表应出现 `lazyant` 下的 26 个工具，以及 4 个 Prompt、4 个 Resource。若连接失败，检查启动器路径、`LAZYANT_DATA_DIR` 与懒蚂蚁是否曾成功启动过（确保 `userData` 目录存在）。
+1. `themeRef` 未知时调用 `search_article_themes` 或 `search_image_themes`，提供关键词。
+2. `get_article_theme` 或 `get_image_theme` 返回 `themeRef`、完整主题和 `revision`。
+3. 调用对应 `update_*_theme`，传回 `themeRef + revision`。局部 CSS 使用 `themeCSSEdits`，整体重写使用 `themeCSS`。
 
-服务通过 **stdio** 与客户端通信；不要向 stdout 打印日志（会干扰协议）。
+`themeRef` 是内部定位符，模型从搜索结果取得，不应要求用户提供。服务内部处理市场/个人来源；市场目录只读时会报错，不会隐式创建个人副本。只有用户明确新建或再做一套时调用 `create_article_theme` 或 `create_image_theme`。
 
-## 写前先读规范（推荐工作流）
+写文章和图文时不得读取主题，主题皮和主题色由用户在编辑器中选择。
 
-外部 Agent（Cursor / Codex 等）在写懒蚂蚁产物前，应先调用对应只读规范工具，或**优先使用 MCP Prompt**（规范会在调大模型之前注入）。规范与技能库「复制提示词」同源（`market/skills/_builtin/*`），MCP 初始化时也会注入 server instructions。
+## Tool 列表
 
-### 推荐：MCP Prompt（先注入规范，再调大模型）
+当前公开 25 个 Tool：
 
-| Prompt       | 参数       | 落稿工具                                                            |
-| ------------ | ---------- | ------------------------------------------------------------------- |
-| `写文章`     | `写作要求` | 按意图调用 `create_article_draft` 或 `update_article_draft`         |
-| `写图文`     | `写作要求` | 按意图调用 `create_image_text_draft` 或 `update_image_text_draft`   |
-| `做文章主题` | `写作要求` | 新建 `save_personal_article_theme`；修改按 source 选择对应 `update` |
-| `做图文主题` | `写作要求` | 新建 `save_personal_image_theme`；修改按 source 选择对应 `update`   |
+| 分类     | Tool                                                                                                                           |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| 规范     | `get_article_markdown_spec`、`get_image_text_markdown_spec`、`get_article_theme_spec`、`get_image_theme_spec`                  |
+| 文章     | `search_article_drafts`、`get_article_draft`、`create_article_draft`、`update_article_draft`                                   |
+| 图文     | `search_image_text_drafts`、`get_image_text_draft`、`create_image_text_draft`、`update_image_text_draft`                       |
+| 我的模板 | `search_workspace_skills`、`get_workspace_skill`、`create_workspace_skill`、`update_workspace_skill`、`delete_workspace_skill` |
+| 文章主题 | `search_article_themes`、`get_article_theme`、`create_article_theme`、`update_article_theme`                                   |
+| 图文主题 | `search_image_themes`、`get_image_theme`、`create_image_theme`、`update_image_theme`                                           |
 
-在 Cursor 对话里选择上述 MCP Prompt 并填写 **写作要求**；客户端会先 `prompts/get` 把 SKILL 全文注入首条消息，再进入大模型生成。正文只写入 create/update 工具的 Markdown `content` 参数。
+成功结果同时提供 JSON 文本和 `structuredContent`；未知 Tool 是 MCP `MethodNotFound`。产品规则失败、版本冲突和只读资源等可恢复错误以 Tool `isError` 返回。
 
-#### 写作要求：自然输入也算
-
-用户不一定单独填 Prompt 参数表。常见写法是把需求写在同一条消息里，例如：
-
-```text
-/写文章 帮我写一篇懒蚂蚁功能介绍
-/写文章 优化下面这篇文章（正文附后）
-```
-
-**Agent 应把 `/写文章`（或 `/写图文` 等）之后、同条消息中的说明与正文，整体视为「写作要求」。**
-
-Cursor 有时只触发 Prompt、不把消息正文填入 `写作要求` 参数，会导致 `prompts/get` 报「写作要求 必填」。这**不代表用户没给要求**——Agent 应忽略该报错，用用户消息作为要求，改走 `get_*_spec` → 按规范生成 → 选择 create 或 update 落盘。
-
-### Cursor：`@` 不会出现 Prompt；用 `/`
-
-- **`@` 菜单**：用于文件、Rules、Docs 等上下文，**不会列出 MCP Prompt**（Cursor 产品设计如此）。
-- **`/` 菜单**：可触发 MCP Prompt。若仍显示 `write_lazyant_article` 等英文名，说明 **lazyant MCP 子进程未刷新**（见下方「重连 MCP」）。
-
-#### 重连 MCP（英文名变中文时必做）
-
-1. **安装包用户**：更新懒蚂蚁到最新版后，Cursor → **Settings → MCP** → `lazyant` → **Restart**
-2. **源码开发**：`cd apps/desktop && pnpm run build:mcp`，再 Restart MCP
-3. 仍不对：**完全退出 Cursor 再打开**
-4. 验证：MCP 说明里应出现「写文章」而非 `write_lazyant_article`
-
-> 兼容：旧版英文 ID（如 `write_lazyant_article`）与参数名 `brief` 仍可用于 `prompts/get`，但列表应显示中文名。
-
-### 备选：Resource @ 引用
-
-| URI                                  | 说明              |
-| ------------------------------------ | ----------------- |
-| `lazyant://spec/article-markdown`    | 文章结构规范      |
-| `lazyant://spec/image-text-markdown` | 图文分卡规范      |
-| `lazyant://spec/article-theme`       | 文章主题 CSS 规范 |
-| `lazyant://spec/image-theme`         | 图文主题 CSS 规范 |
-
-### 备选：get___spec + create/update
-
-| 用户意图               | 先调用（读规范）               | 再调用（落盘）                                                                                  |
-| ---------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------- |
-| 写公众号/长文 Markdown | `get_article_markdown_spec`    | 新建 `create_article_draft`；修改 `list/get/update_article_draft`                               |
-| 写小红书等图文分卡     | `get_image_text_markdown_spec` | 新建 `create_image_text_draft`；修改 `list/get/update_image_text_draft`                         |
-| 做/改文章主题 CSS      | `get_article_theme_spec`       | `save_personal_article_theme` / `update_personal_article_theme` / `update_market_article_theme` |
-| 做/改图文主题 CSS      | `get_image_theme_spec`         | `save_personal_image_theme` / `update_personal_image_theme` / `update_market_image_theme`       |
-
-Agent 应先调用 `get_*_spec` 阅读规范，再按规范在对应 create/update 的 `content` / `themeCSS` 参数里生成产物，不要先在聊天气泡里写全文。
-
-### 写作 Skill：先确定内容，再从「我的模板」选择
-
-- 用户给链接时必须先读取完整正文；用户粘贴素材时先读完素材；纯选题先明确主题、受众与核心要点。
-- 内容确定前，不能根据“公众号”“微信文章”“财经”等平台词或题材词提前命中 Skill。
-- 内容确定后调用 `list_workspace_skills`，只比较 `skill-packs`（「我的模板」）返回的轻量摘要；选定后再调用 `get_skill_pack` 读取完整 Skill。
-- 自动选择不读取市场模板，也不扫描 Agent 全局 Skill。没有合适的「我的模板」时，不强行套用模板。
-- 用户明确通过 `/` 或名称点名 Skill 时，才直接使用 `~/.agents/skills` 中的镜像副本。
-
-懒蚂蚁启动及「我的模板」变化时会严格镜像 `skill-packs` → `~/.agents/skills`：以「我的模板」为唯一标准，目标目录多余 Skill 删除，同名但内容不同的 Skill 直接覆盖。
-
-### 文章与图文：新建和更新由模型按用户意图选择
-
-- 用户要求写一篇、再写一篇、换一个选题时，调用 `create_*_draft`；每次都会返回全新的 `draftId`，同一个 Codex、Cursor 或 WorkBuddy 会话可以连续创建多篇。
-- 用户要求修改、优化、润色、续写或“基于这篇”时，先 `list_*_drafts` 定位目标，再以 `draftId` 调 `get_*_draft` 读取原文和 `revision`，最后调用 `update_*_draft`。更新只会影响指定 `draftId`。
-- 目标文章只由 `draftId` 决定，不用会话或任务身份判断新建/更新，也不作为文章身份。
-- MCP 文章/图文工具只传递 Markdown `content`，不会读取或返回主题色、主题引用、渲染后的 HTML；主题由用户在懒蚂蚁编辑器中选择。
-- 文章主题：先 `list_article_themes` 确定 `source` + `folderId`，再 `get_article_theme` 读取完整主题；`personal` 调 `update_personal_article_theme`，`market` 调 `update_market_article_theme`。
-- 图文主题：先 `list_image_themes` 确定 `source` + `folderId`，再 `get_image_theme` 读取完整主题；`personal` 调 `update_personal_image_theme`，`market` 调 `update_market_image_theme`。
-- `folderId` 由 Agent 根据用户说的主题名或当前上下文自动获取，不向用户索要。只有多个同名候选无法消歧时，才请用户按主题名和来源选择。
-- 只有用户明确要求“新建”或“再做一套”时才调用 `save_personal_*_theme`。个人主题同名 save 会更新原 `folderId`；市场主题同名会拒绝创建副本。
-
-## 工具列表
-
-### Prompts（推荐入口）
-
-| Prompt       | 说明                                           |
-| ------------ | ---------------------------------------------- |
-| `写文章`     | 预置文章排版语法后写作（参数 `写作要求`）      |
-| `写图文`     | 预置图文分卡规范后写作（参数 `写作要求`）      |
-| `做文章主题` | 预置文章主题 CSS 规范后做皮（参数 `写作要求`） |
-| `做图文主题` | 预置图文主题 CSS 规范后做皮（参数 `写作要求`） |
-
-### Resources
-
-| URI                                  | 说明              |
-| ------------------------------------ | ----------------- |
-| `lazyant://spec/article-markdown`    | 文章排版语法      |
-| `lazyant://spec/image-text-markdown` | 图文卡片语法      |
-| `lazyant://spec/article-theme`       | 文章主题 CSS 规范 |
-| `lazyant://spec/image-theme`         | 图文主题 CSS 规范 |
-
-### Tools
-
-| 工具                            | 说明                                                       |
-| ------------------------------- | ---------------------------------------------------------- |
-| `get_article_markdown_spec`     | 文章排版语法（cover / toc / PART / footer-cta）            |
-| `get_image_text_markdown_spec`  | 图文卡片语法（`---` 分卡）                                 |
-| `get_article_theme_spec`        | 文章主题 CSS 规范（`#output`、样例 CSS）                   |
-| `get_image_theme_spec`          | 图文主题 CSS 规范（`.card-*`、样例 CSS）                   |
-| `list_article_drafts`           | 列出文章定稿摘要                                           |
-| `get_article_draft`             | 按 `draftId` 读取文章定稿                                  |
-| `create_article_draft`          | 新建独立文章定稿，返回 `draftId`                           |
-| `update_article_draft`          | 按 `draftId` 和 `revision` 更新文章                        |
-| `list_image_text_drafts`        | 列出图文定稿摘要                                           |
-| `get_image_text_draft`          | 按 `draftId` 读取图文定稿                                  |
-| `create_image_text_draft`       | 新建独立图文定稿，返回 `draftId`                           |
-| `update_image_text_draft`       | 按 `draftId` 和 `revision` 更新图文（至少 4 张卡、3 tags） |
-| `list_workspace_skills`         | 内容确定后列出「我的模板」轻量摘要                         |
-| `get_skill_pack`                | 读取选中的「我的模板」Skill 包                             |
-| `save_workspace_skill`          | 新建/更新 Skill（单文件或整包）                            |
-| `remove_workspace_skill`        | 删除 Skill                                                 |
-| `list_article_themes`           | 市场 + 个人文章主题索引                                    |
-| `get_article_theme`             | 读取文章主题包                                             |
-| `save_personal_article_theme`   | 新建个人文章主题；市场同名时拒绝创建副本                   |
-| `update_personal_article_theme` | 按 `folderId` 修改                                         |
-| `update_market_article_theme`   | 按 `folderId` 原位修改可写的市场主题                       |
-| `list_image_themes`             | 市场 + 个人图文主题索引                                    |
-| `get_image_theme`               | 读取图文主题包                                             |
-| `save_personal_image_theme`     | 新建个人图文主题；市场同名时拒绝创建副本                   |
-| `update_personal_image_theme`   | 按 `folderId` 修改                                         |
-| `update_market_image_theme`     | 按 `folderId` 原位修改可写的市场图文主题                   |
-
-## 数据路径
+## 数据边界
 
 | 产物          | 路径（相对 userData）                      |
 | ------------- | ------------------------------------------ |
 | 文章/图文定稿 | `workspace/articles/drafts/<draftId>.json` |
 | 个人文章主题  | `workspace/themes/article/<folderId>/`     |
 | 个人图文主题  | `workspace/themes/image/<folderId>/`       |
-| Skill         | `skill-packs/<skillId>/`                   |
+| 我的模板      | `skill-packs/<skillId>/`                   |
 
-懒蚂蚁桌面端启动时会扫描 `workspace/themes/` 同步到「我的主题」；MCP 写入后若 App 已运行会自动刷新。
+MCP 不处理账号、Cookie、平台发布、浏览器调试端口或自动任务。自动任务独立维护自己的状态，不能影响 MCP 的草稿选择和更新。
 
-## 客户端接入
+## 验证
 
-- **外部客户端**：通过本 MCP Server 访问 `product-services` 落盘层。
-- 市场官方主题 / Skill **只读**；写回 market 目录仍为 dev-only，不暴露给 MCP。
-
-## 示例
-
-保存文章：
-
-```json
-{
-  "title": "示例标题",
-  "digest": "一句话摘要",
-  "content": "# 正文\n\n完整 Markdown…",
-  "tags": ["标签1", "标签2"]
-}
-```
-
-保存图文（`content` 用 `---` 分卡）：
-
-```json
-{
-  "title": "笔记标题",
-  "digest": "八十到一百字摘要",
-  "content": "钩子\n\n---\n\n经历\n\n---\n\n方法\n\n---\n\n提问",
-  "tags": ["效率", "干货", "成长"]
-}
+```bash
+pnpm --dir apps/desktop run build:mcp
+pnpm --dir apps/desktop exec vitest run src/mcp-server
 ```
