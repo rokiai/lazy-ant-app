@@ -130,7 +130,7 @@ codex mcp add "懒蚂蚁" -- pnpm --dir /path/to/lazy-ant/apps/desktop cli:mcp
 
 ### 验证
 
-在 Codex 中发起对话，要求列出懒蚂蚁工具或调用 `get_article_draft`；工具列表应出现 `lazyant` 下的 22 个工具，以及 4 个 Prompt、4 个 Resource。若连接失败，检查启动器路径、`LAZYANT_DATA_DIR` 与懒蚂蚁是否曾成功启动过（确保 `userData` 目录存在）。
+在 Codex 中发起对话，要求列出懒蚂蚁工具；工具列表应出现 `lazyant` 下的 26 个工具，以及 4 个 Prompt、4 个 Resource。若连接失败，检查启动器路径、`LAZYANT_DATA_DIR` 与懒蚂蚁是否曾成功启动过（确保 `userData` 目录存在）。
 
 服务通过 **stdio** 与客户端通信；不要向 stdout 打印日志（会干扰协议）。
 
@@ -142,12 +142,12 @@ codex mcp add "懒蚂蚁" -- pnpm --dir /path/to/lazy-ant/apps/desktop cli:mcp
 
 | Prompt       | 参数       | 落稿工具                                                            |
 | ------------ | ---------- | ------------------------------------------------------------------- |
-| `写文章`     | `写作要求` | `save_article_draft`                                                |
-| `写图文`     | `写作要求` | `save_image_text_draft`                                             |
+| `写文章`     | `写作要求` | 按意图调用 `create_article_draft` 或 `update_article_draft`         |
+| `写图文`     | `写作要求` | 按意图调用 `create_image_text_draft` 或 `update_image_text_draft`   |
 | `做文章主题` | `写作要求` | 新建 `save_personal_article_theme`；修改按 source 选择对应 `update` |
 | `做图文主题` | `写作要求` | 新建 `save_personal_image_theme`；修改按 source 选择对应 `update`   |
 
-在 Cursor 对话里选择上述 MCP Prompt 并填写 **写作要求**；客户端会先 `prompts/get` 把 SKILL 全文注入首条消息，再进入大模型生成。正文只写入 `save_*` 工具参数。
+在 Cursor 对话里选择上述 MCP Prompt 并填写 **写作要求**；客户端会先 `prompts/get` 把 SKILL 全文注入首条消息，再进入大模型生成。正文只写入 create/update 工具的 Markdown `content` 参数。
 
 #### 写作要求：自然输入也算
 
@@ -160,7 +160,7 @@ codex mcp add "懒蚂蚁" -- pnpm --dir /path/to/lazy-ant/apps/desktop cli:mcp
 
 **Agent 应把 `/写文章`（或 `/写图文` 等）之后、同条消息中的说明与正文，整体视为「写作要求」。**
 
-Cursor 有时只触发 Prompt、不把消息正文填入 `写作要求` 参数，会导致 `prompts/get` 报「写作要求 必填」。这**不代表用户没给要求**——Agent 应忽略该报错，用用户消息作为要求，改走 `get_*_spec` → 按规范生成 → `save_*` 落盘。
+Cursor 有时只触发 Prompt、不把消息正文填入 `写作要求` 参数，会导致 `prompts/get` 报「写作要求 必填」。这**不代表用户没给要求**——Agent 应忽略该报错，用用户消息作为要求，改走 `get_*_spec` → 按规范生成 → 选择 create 或 update 落盘。
 
 ### Cursor：`@` 不会出现 Prompt；用 `/`
 
@@ -185,20 +185,33 @@ Cursor 有时只触发 Prompt、不把消息正文填入 `写作要求` 参数�
 | `lazyant://spec/article-theme`       | 文章主题 CSS 规范 |
 | `lazyant://spec/image-theme`         | 图文主题 CSS 规范 |
 
-### 备选：get___spec + save__
+### 备选：get___spec + create/update
 
 | 用户意图               | 先调用（读规范）               | 再调用（落盘）                                                                                  |
 | ---------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------- |
-| 写公众号/长文 Markdown | `get_article_markdown_spec`    | `save_article_draft`                                                                            |
-| 写小红书等图文分卡     | `get_image_text_markdown_spec` | `save_image_text_draft`                                                                         |
+| 写公众号/长文 Markdown | `get_article_markdown_spec`    | 新建 `create_article_draft`；修改 `list/get/update_article_draft`                               |
+| 写小红书等图文分卡     | `get_image_text_markdown_spec` | 新建 `create_image_text_draft`；修改 `list/get/update_image_text_draft`                         |
 | 做/改文章主题 CSS      | `get_article_theme_spec`       | `save_personal_article_theme` / `update_personal_article_theme` / `update_market_article_theme` |
 | 做/改图文主题 CSS      | `get_image_theme_spec`         | `save_personal_image_theme` / `update_personal_image_theme` / `update_market_image_theme`       |
 
-Agent 应先调用 `get_*_spec` 阅读规范，再按规范在 `save_*` 的 `content` / `themeCSS` 参数里生成产物，不要先在聊天气泡里写全文。
+Agent 应先调用 `get_*_spec` 阅读规范，再按规范在对应 create/update 的 `content` / `themeCSS` 参数里生成产物，不要先在聊天气泡里写全文。
 
-### 修改已有产物：必须原位更新
+### 写作 Skill：先确定内容，再从「我的模板」选择
 
-- 文章/图文：先 `get_*_draft` 读取当前定稿，基于原文修改，再调用 `save_*_draft`；固定覆盖同一个 `article-ready`。
+- 用户给链接时必须先读取完整正文；用户粘贴素材时先读完素材；纯选题先明确主题、受众与核心要点。
+- 内容确定前，不能根据“公众号”“微信文章”“财经”等平台词或题材词提前命中 Skill。
+- 内容确定后调用 `list_workspace_skills`，只比较 `skill-packs`（「我的模板」）返回的轻量摘要；选定后再调用 `get_skill_pack` 读取完整 Skill。
+- 自动选择不读取市场模板，也不扫描 Agent 全局 Skill。没有合适的「我的模板」时，不强行套用模板。
+- 用户明确通过 `/` 或名称点名 Skill 时，才直接使用 `~/.agents/skills` 中的镜像副本。
+
+懒蚂蚁启动及「我的模板」变化时会严格镜像 `skill-packs` → `~/.agents/skills`：以「我的模板」为唯一标准，目标目录多余 Skill 删除，同名但内容不同的 Skill 直接覆盖。
+
+### 文章与图文：新建和更新由模型按用户意图选择
+
+- 用户要求写一篇、再写一篇、换一个选题时，调用 `create_*_draft`；每次都会返回全新的 `draftId`，同一个 Codex、Cursor 或 WorkBuddy 会话可以连续创建多篇。
+- 用户要求修改、优化、润色、续写或“基于这篇”时，先 `list_*_drafts` 定位目标，再以 `draftId` 调 `get_*_draft` 读取原文和 `revision`，最后调用 `update_*_draft`。更新只会影响指定 `draftId`。
+- 目标文章只由 `draftId` 决定，不用会话或任务身份判断新建/更新，也不作为文章身份。
+- MCP 文章/图文工具只传递 Markdown `content`，不会读取或返回主题色、主题引用、渲染后的 HTML；主题由用户在懒蚂蚁编辑器中选择。
 - 文章主题：先 `list_article_themes` 确定 `source` + `folderId`，再 `get_article_theme` 读取完整主题；`personal` 调 `update_personal_article_theme`，`market` 调 `update_market_article_theme`。
 - 图文主题：先 `list_image_themes` 确定 `source` + `folderId`，再 `get_image_theme` 读取完整主题；`personal` 调 `update_personal_image_theme`，`market` 调 `update_market_image_theme`。
 - `folderId` 由 Agent 根据用户说的主题名或当前上下文自动获取，不向用户索要。只有多个同名候选无法消歧时，才请用户按主题名和来源选择。
@@ -226,39 +239,43 @@ Agent 应先调用 `get_*_spec` 阅读规范，再按规范在 `save_*` 的 `con
 
 ### Tools
 
-| 工具                            | 说明                                                    |
-| ------------------------------- | ------------------------------------------------------- |
-| `get_article_markdown_spec`     | 文章排版语法（cover / toc / PART / footer-cta）         |
-| `get_image_text_markdown_spec`  | 图文卡片语法（`---` 分卡）                              |
-| `get_article_theme_spec`        | 文章主题 CSS 规范（`#output`、样例 CSS）                |
-| `get_image_theme_spec`          | 图文主题 CSS 规范（`.card-*`、样例 CSS）                |
-| `get_article_draft`             | 读取文章定稿                                            |
-| `save_article_draft`            | 新建/修改文章定稿（merge 语义）                         |
-| `get_image_text_draft`          | 读取图文定稿                                            |
-| `save_image_text_draft`         | 新建/修改图文定稿（`---` 分卡，至少 4 张卡，3 个 tags） |
-| `list_workspace_skills`         | 列出 skill-packs                                        |
-| `get_skill_pack`                | 读取 Skill 包                                           |
-| `save_workspace_skill`          | 新建/更新 Skill（单文件或整包）                         |
-| `remove_workspace_skill`        | 删除 Skill                                              |
-| `list_article_themes`           | 市场 + 个人文章主题索引                                 |
-| `get_article_theme`             | 读取文章主题包                                          |
-| `save_personal_article_theme`   | 新建个人文章主题；市场同名时拒绝创建副本                |
-| `update_personal_article_theme` | 按 `folderId` 修改                                      |
-| `update_market_article_theme`   | 按 `folderId` 原位修改可写的市场主题                    |
-| `list_image_themes`             | 市场 + 个人图文主题索引                                 |
-| `get_image_theme`               | 读取图文主题包                                          |
-| `save_personal_image_theme`     | 新建个人图文主题；市场同名时拒绝创建副本                |
-| `update_personal_image_theme`   | 按 `folderId` 修改                                      |
-| `update_market_image_theme`     | 按 `folderId` 原位修改可写的市场图文主题                |
+| 工具                            | 说明                                                       |
+| ------------------------------- | ---------------------------------------------------------- |
+| `get_article_markdown_spec`     | 文章排版语法（cover / toc / PART / footer-cta）            |
+| `get_image_text_markdown_spec`  | 图文卡片语法（`---` 分卡）                                 |
+| `get_article_theme_spec`        | 文章主题 CSS 规范（`#output`、样例 CSS）                   |
+| `get_image_theme_spec`          | 图文主题 CSS 规范（`.card-*`、样例 CSS）                   |
+| `list_article_drafts`           | 列出文章定稿摘要                                           |
+| `get_article_draft`             | 按 `draftId` 读取文章定稿                                  |
+| `create_article_draft`          | 新建独立文章定稿，返回 `draftId`                           |
+| `update_article_draft`          | 按 `draftId` 和 `revision` 更新文章                        |
+| `list_image_text_drafts`        | 列出图文定稿摘要                                           |
+| `get_image_text_draft`          | 按 `draftId` 读取图文定稿                                  |
+| `create_image_text_draft`       | 新建独立图文定稿，返回 `draftId`                           |
+| `update_image_text_draft`       | 按 `draftId` 和 `revision` 更新图文（至少 4 张卡、3 tags） |
+| `list_workspace_skills`         | 内容确定后列出「我的模板」轻量摘要                         |
+| `get_skill_pack`                | 读取选中的「我的模板」Skill 包                             |
+| `save_workspace_skill`          | 新建/更新 Skill（单文件或整包）                            |
+| `remove_workspace_skill`        | 删除 Skill                                                 |
+| `list_article_themes`           | 市场 + 个人文章主题索引                                    |
+| `get_article_theme`             | 读取文章主题包                                             |
+| `save_personal_article_theme`   | 新建个人文章主题；市场同名时拒绝创建副本                   |
+| `update_personal_article_theme` | 按 `folderId` 修改                                         |
+| `update_market_article_theme`   | 按 `folderId` 原位修改可写的市场主题                       |
+| `list_image_themes`             | 市场 + 个人图文主题索引                                    |
+| `get_image_theme`               | 读取图文主题包                                             |
+| `save_personal_image_theme`     | 新建个人图文主题；市场同名时拒绝创建副本                   |
+| `update_personal_image_theme`   | 按 `folderId` 修改                                         |
+| `update_market_image_theme`     | 按 `folderId` 原位修改可写的市场图文主题                   |
 
 ## 数据路径
 
-| 产物          | 路径（相对 userData）                   |
-| ------------- | --------------------------------------- |
-| 文章/图文定稿 | `workspace/articles/article-ready.json` |
-| 个人文章主题  | `workspace/themes/article/<folderId>/`  |
-| 个人图文主题  | `workspace/themes/image/<folderId>/`    |
-| Skill         | `skill-packs/<skillId>/`                |
+| 产物          | 路径（相对 userData）                      |
+| ------------- | ------------------------------------------ |
+| 文章/图文定稿 | `workspace/articles/drafts/<draftId>.json` |
+| 个人文章主题  | `workspace/themes/article/<folderId>/`     |
+| 个人图文主题  | `workspace/themes/image/<folderId>/`       |
+| Skill         | `skill-packs/<skillId>/`                   |
 
 懒蚂蚁桌面端启动时会扫描 `workspace/themes/` 同步到「我的主题」；MCP 写入后若 App 已运行会自动刷新。
 
