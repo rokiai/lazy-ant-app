@@ -158,14 +158,14 @@ macOS · Windows · Linux
 
 ### 能做什么
 
-| 能力         | 新建 | 修改 | MCP 入口                                                                                                      |
-| :----------- | :--: | :--: | :------------------------------------------------------------------------------------------------------------ |
-| **规范**     |  —   |  —   | **Prompt** `写文章` 等（推荐）；或 Resource / `get_*_spec`                                                    |
-| **文章**     |  ✅  |  ✅  | `get_article_draft` / `save_article_draft`                                                                    |
-| **图文**     |  ✅  |  ✅  | `get_image_text_draft` / `save_image_text_draft`（`---` 分卡，至少 4 张卡）                                   |
-| **Skill**    |  ✅  |  ✅  | `list_workspace_skills` / `get_skill_pack` / `save_workspace_skill` / `remove_workspace_skill`                |
-| **文章主题** |  ✅  |  ✅  | `list_article_themes` / `get_article_theme` / `save_personal_article_theme` / `update_personal_article_theme` |
-| **图文主题** |  ✅  |  ✅  | `list_image_themes` / `get_image_theme` / `save_personal_image_theme` / `update_personal_image_theme`         |
+| 能力         | 新建 | 修改 | MCP 入口                                                                                                                           |
+| :----------- | :--: | :--: | :--------------------------------------------------------------------------------------------------------------------------------- |
+| **规范**     |  —   |  —   | **Prompt** `写文章` 等（推荐）；或 Resource / `get_*_spec`                                                                         |
+| **文章**     |  ✅  |  ✅  | `get_article_draft` / `create_article_draft` / `update_article_draft`                                                              |
+| **图文**     |  ✅  |  ✅  | `get_image_text_draft` / `create_image_text_draft` / `update_image_text_draft`（`---` 分卡，至少 4 张卡）                          |
+| **Skill**    |  ✅  |  ✅  | `search_workspace_skills` / `get_workspace_skill` / `create_workspace_skill` / `update_workspace_skill` / `delete_workspace_skill` |
+| **文章主题** |  ✅  |  ✅  | `search_article_themes` / `get_article_theme` / `create_article_theme` / `update_article_theme`                                    |
+| **图文主题** |  ✅  |  ✅  | `search_image_themes` / `get_image_theme` / `create_image_theme` / `update_image_theme`                                            |
 
 说明：
 
@@ -273,7 +273,7 @@ LAZYANT_DATA_DIR = "/Users/你的用户名/Library/Application Support/懒蚂蚁
 
 在 Cursor / Codex 里可以让 AI 调用工具，例如：
 
-- 「用 `save_article_draft` 写一篇关于懒蚂蚁的公众号稿」
+- 「用 `create_article_draft` 写一篇关于懒蚂蚁的公众号稿」
 - 「读取当前图文定稿，把第三张卡改短一点再保存」
 - 「新建一个 Skill，SKILL.md 里写小红书种草笔记结构」
 - 「基于摸鱼绿主题风格，生成一套个人文章主题 CSS 并保存」
