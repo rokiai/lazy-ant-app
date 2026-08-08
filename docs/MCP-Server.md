@@ -4,7 +4,7 @@
 
 ## 文档定位与维护原则
 
-- MCP 只写入用户个人数据：Markdown 草稿、个人主题和「我的模板」Skill；市场资源仅作为只读内容提供。
+- MCP 只写入用户个人数据：Markdown 草稿、文稿素材、个人主题和「我的模板」Skill；市场资源仅作为只读内容提供。
 - 市场主题与市场 Skill 是只读官方资源；MCP 不直接修改市场源码目录。市场主题包必须包含与 `theme.json`、`theme.css` 匹配的 `.mcp-revision`，开发态写回也通过该 marker 发布提交。
 - 过时协议、旧字段和错误入口直接删除，不保留 migration、fallback、双读双写或兼容别名。
 - 修改 Tool 的输入、输出、持久化或资源边界时，必须同步更新本文档、实现和测试。
@@ -193,7 +193,7 @@ theme.css        唯一 CSS 来源
 
 ## Tool 列表
 
-当前公开 25 个 Tool：
+当前公开 26 个 Tool：
 
 | 分类     | Tool                                                                                                                           |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
@@ -203,6 +203,22 @@ theme.css        唯一 CSS 来源
 | 我的模板 | `search_workspace_skills`、`get_workspace_skill`、`create_workspace_skill`、`update_workspace_skill`、`delete_workspace_skill` |
 | 文章主题 | `search_article_themes`、`get_article_theme`、`create_article_theme`、`update_article_theme`                                   |
 | 图文主题 | `search_image_themes`、`get_image_theme`、`create_image_theme`、`update_image_theme`                                           |
+| 文稿素材 | `add_workspace_materials`                                                                                                      |
+
+### 文稿素材
+
+`add_workspace_materials` 将外部 Agent 在本机系统临时目录生成的图片挂到指定文章或图文的「文稿素材」侧边栏。调用时必须提供目标 `draftId`、`documentKind` 与图片绝对路径：
+
+```json
+{
+  "draftId": "目标文稿的 draftId",
+  "documentKind": "article",
+  "images": [{ "filePath": "/var/folders/.../T/cover.png" }],
+  "source": "codex"
+}
+```
+
+服务只读取本机系统临时目录内的 PNG、JPEG、GIF、WebP 文件，单张最多 25 MB；会根据二进制签名校验格式并复制到 `workspace/images/`，不会依赖外部临时文件继续存在。`images` 不接收 base64、URL 或任意工作目录路径。图片默认只挂到目标文稿，不自动插入正文、不设为封面、不收藏进全局素材库。
 
 成功结果同时提供 JSON 文本和 `structuredContent`，每个 Tool 都公开稳定的 `outputSchema`；MCP v2 `registerTool` 会按 `tools/list` 的 `inputSchema` 和 `outputSchema` 校验调用边界，缺参或类型错误以 `isError` Tool 结果返回。未知 Tool 是 MCP `MethodNotFound`。产品规则失败、版本冲突和只读资源等可恢复错误也以 Tool `isError` 返回。
 
@@ -214,6 +230,7 @@ theme.css        唯一 CSS 来源
 | 个人文章主题  | `workspace/themes/article/<folderId>/`     |
 | 个人图文主题  | `workspace/themes/image/<folderId>/`       |
 | 我的模板      | `skill-packs/<skillId>/`                   |
+| 文稿素材图片  | `workspace/images/<内容哈希>.<扩展名>`     |
 
 MCP 不处理账号、Cookie、平台发布、浏览器调试端口或自动任务。自动任务独立维护自己的状态，不能影响 MCP 的草稿选择和更新。
 
