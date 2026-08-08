@@ -13,11 +13,11 @@
 
 ### 安装包用户
 
-在懒蚂蚁首页打开客户端教程，使用「复制 MCP 配置」。启动器位于：
+在懒蚂蚁首页打开客户端教程。macOS / Windows 支持「一键配置」写入全局文件；Linux 暂不支持一键写入，但仍可「复制 MCP 配置」后手动写入。启动器位于：
 
 - macOS：`/Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp`
 - Windows：安装目录 `resources\lazyant-mcp.cmd`
-- Linux：安装目录 `resources/lazyant-mcp`
+- Linux：安装目录 `resources/lazyant-mcp`（仅复制配置，需手动确认路径）
 
 启动器通过 `ELECTRON_RUN_AS_NODE` 运行 `Resources/mcp/stdio.js`，并与桌面端共用 userData。
 
@@ -26,7 +26,8 @@ Cursor 配置示例：
 ```json
 {
   "mcpServers": {
-    "懒蚂蚁": {
+    "lazyant": {
+      "type": "stdio",
       "command": "/Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp",
       "args": [],
       "env": {
@@ -37,21 +38,23 @@ Cursor 配置示例：
 }
 ```
 
+Cursor 全局配置文件为 `~/.cursor/mcp.json`；WorkBuddy 全局配置文件为 `~/.codebuddy/.mcp.json`。一键配置只增量替换 `mcpServers.lazyant`，不会覆盖其他服务，也不写项目级配置。
+
 Codex 配置示例：
 
 ```toml
-[mcp_servers."懒蚂蚁"]
+[mcp_servers.lazyant]
 command = "/Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp"
 args = []
 
-[mcp_servers."懒蚂蚁".env]
+[mcp_servers.lazyant.env]
 LAZYANT_DATA_DIR = "/Users/you/Library/Application Support/懒蚂蚁"
 ```
 
 也可使用：
 
 ```bash
-codex mcp add "懒蚂蚁" -- /Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp
+codex mcp add lazyant -- /Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp
 ```
 
 ### 源码开发
@@ -66,7 +69,8 @@ Cursor 开发配置：
 ```json
 {
   "mcpServers": {
-    "懒蚂蚁": {
+    "lazyant": {
+      "type": "stdio",
       "command": "pnpm",
       "args": ["--dir", "/path/to/lazy-ant/apps/desktop", "cli:mcp"],
       "env": {
@@ -137,7 +141,7 @@ Cursor 开发配置：
 | `update_workspace_skill` | 先 get，再传整包 `revision`、`path` 和 `content` 或 `edits`              |
 | `delete_workspace_skill` | 仅在用户明确要求删除时调用，必须带最新整包 `revision` 和 `confirm: true` |
 
-`skill-packs` 是权威目录。MCP 只读写该目录，不直接访问或同步 `~/.agents/skills`。桌面应用启动时执行一次对齐；运行期间由 `skill-packs` watcher 在模板变更后调度同步。应用未运行时 MCP 写入仍以 `skill-packs` 成功落盘为准，镜像会在下次启动或 watcher 触发时更新。
+`skill-packs` 是权威目录。MCP 只读写该目录，不直接访问外部 Skill 镜像。macOS / Windows 下桌面应用启动时执行一次对齐，并将「我的 Skill」同步到 Codex、Cursor 共用的 `~/.agents/skills` 以及 WorkBuddy 的 `~/.codebuddy/skills`；Linux 暂不自动落盘，不创建外部镜像目录。运行期间由 `skill-packs` watcher 在模板变更后调度同步。
 
 桌面单文件编辑、整包覆盖和 MCP 更新共用同一份整包内容 `revision` 校验和跨进程写锁；市场安装只负责准备工作区目录，不提供隐式 market 回退写入。`search_workspace_skills` 与桌面一级列表使用的 `scanRevision` 仅用于轻量变更检测，不能作为任何写入请求的 `revision`。
 

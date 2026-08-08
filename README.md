@@ -133,16 +133,16 @@ macOS · Windows · Linux
 
 ## 功能一览
 
-|                |                                                        |
-| :------------- | :----------------------------------------------------- |
-| **文章编辑**   | Markdown 长文稿，封面 / 目录 / 结构化排版，实时预览    |
-| **图文编辑**   | Markdown 拆卡，机型预览，导出 PNG 或直接发布           |
-| **主题库**     | 文章主题 + 图文主题，市场浏览、收藏、一键套用          |
-| **Skill 模板** | 提示词市场与我的模板，写作方法可复用                   |
-| **自动化**     | 选 Skill → AI 生成 → 多平台发布，配置一次反复跑        |
-| **选题灵感**   | 多平台热榜聚合，快速找到值得写的题                     |
-| **账号管理**   | 发布平台与写作模型，集中授权与登录态检测               |
-| **MCP 接入**   | 供 Cursor、Codex 等外部 AI 客户端读写文稿、Skill、主题 |
+|                |                                                                   |
+| :------------- | :---------------------------------------------------------------- |
+| **文章编辑**   | Markdown 长文稿，封面 / 目录 / 结构化排版，实时预览               |
+| **图文编辑**   | Markdown 拆卡，机型预览，导出 PNG 或直接发布                      |
+| **主题库**     | 文章主题 + 图文主题，市场浏览、收藏、一键套用                     |
+| **Skill 模板** | 提示词市场与我的模板，写作方法可复用                              |
+| **自动化**     | 选 Skill → AI 生成 → 多平台发布，配置一次反复跑                   |
+| **选题灵感**   | 多平台热榜聚合，快速找到值得写的题                                |
+| **账号管理**   | 发布平台与写作模型，集中授权与登录态检测                          |
+| **MCP 接入**   | 供 Cursor、Codex、WorkBuddy 等外部 AI 客户端读写文稿、Skill、主题 |
 
 ## 快速上手
 
@@ -150,11 +150,11 @@ macOS · Windows · Linux
 2. 在「模型」里授权写作用的 AI（如豆包、Kimi）
 3. 从首页进入「发文章」或「做图文」，选主题、写内容、预览定稿
 4. 点「发布」同步到平台草稿箱，或在「自动」里配置 Skill 流水线
-5. （可选）在 Cursor 中配置懒蚂蚁 MCP，见下文 [MCP 接入](#mcp-接入cursor--codex--claude-desktop)
+5. （可选）在 Cursor、Codex 或 WorkBuddy 中配置懒蚂蚁 MCP，见下文 [MCP 接入](#mcp-接入cursor--codex--workbuddy)
 
-## MCP 接入（Cursor / Codex / Claude Desktop）
+## MCP 接入（Cursor / Codex / WorkBuddy）
 
-懒蚂蚁自带 **MCP Server**，让 [Cursor](https://cursor.com)、[OpenAI Codex](https://developers.openai.com/codex)、Claude Desktop 等外部 AI 客户端直接读写你本地的文章、图文、Skill 与个人主题——与桌面端共用同一份数据，写完可在懒蚂蚁里预览、排版、发布。
+懒蚂蚁自带 **MCP Server**，让 [Cursor](https://cursor.com)、[OpenAI Codex](https://developers.openai.com/codex)、WorkBuddy 等外部 AI 客户端直接读写你本地的文章、图文、Skill 与个人主题——与桌面端共用同一份数据，写完可在懒蚂蚁里预览、排版、发布。
 
 ### 能做什么
 
@@ -177,20 +177,21 @@ macOS · Windows · Linux
 ### 配置步骤（推荐：已安装懒蚂蚁）
 
 1. 打开懒蚂蚁 → **设置** → **自动化**
-2. 在首页点击 Cursor、Codex 或 WorkBuddy，打开对应教程，再点 **「复制 MCP 配置」**（已含本机 `userData` 路径与当前系统启动器）
-3. 粘贴到对应客户端（见下方）
+2. 在首页点击 Cursor、Codex 或 WorkBuddy，打开对应教程；macOS / Windows 点击 **「一键配置」**，Linux 点击 **「复制 MCP 配置」** 后手动写入（Linux 暂不支持一键配置）
+3. 如选择复制，将配置写入对应客户端的全局文件（见下方）
 4. 重启客户端，确认「懒蚂蚁」服务已连接
 
-#### Cursor / Claude Desktop
+#### Cursor
 
-粘贴 JSON 到 **Cursor → Settings → MCP**，或项目 `.cursor/mcp.json` / Claude Desktop 的 `claude_desktop_config.json`。
+Cursor 全局配置文件为 `~/.cursor/mcp.json`（Windows 为 `%USERPROFILE%\\.cursor\\mcp.json`）。一键配置会增量保留其他 MCP 服务。
 
 macOS 安装包示例（路径以你复制的内容为准）：
 
 ```json
 {
   "mcpServers": {
-    "懒蚂蚁": {
+    "lazyant": {
+      "type": "stdio",
       "command": "/Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp",
       "args": [],
       "env": {
@@ -201,33 +202,34 @@ macOS 安装包示例（路径以你复制的内容为准）：
 }
 ```
 
-Windows 启动器为 `Resources\lazyant-mcp.cmd`；Linux 为 `resources/lazyant-mcp`。无需单独安装 Node / pnpm。
+Windows 启动器为 `Resources\lazyant-mcp.cmd`；Linux 仅提供复制内容，启动器路径需手动确认。无需单独安装 Node / pnpm。
 
 #### OpenAI Codex
 
-Codex 使用 TOML，不是 JSON。在首页打开 Codex 教程并点击 **「复制 MCP 配置」** 后追加到：
+Codex 使用 TOML，不是 JSON。在首页打开 Codex 教程后配置到：
 
-- 用户级：`~/.codex/config.toml`（全局生效）
-- 或项目级：`.codex/config.toml`（需 trusted project）
+- 用户级：`~/.codex/config.toml`（全局生效；Windows 为 `%USERPROFILE%\\.codex\\config.toml`）
+
+一键配置只替换 `[mcp_servers.lazyant]`，保留其他配置。
 
 macOS 安装包示例：
 
 ```toml
-[mcp_servers."懒蚂蚁"]
+[mcp_servers.lazyant]
 command = "/Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp"
 args = []
 
-[mcp_servers."懒蚂蚁".env]
+[mcp_servers.lazyant.env]
 LAZYANT_DATA_DIR = "/Users/你的用户名/Library/Application Support/懒蚂蚁"
 ```
 
 也可用 Codex CLI 注册（`command` 后的 `--` 之后为启动器路径）：
 
 ```bash
-codex mcp add "懒蚂蚁" -- /Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp
+codex mcp add lazyant -- /Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp
 ```
 
-若 CLI 未写入 `LAZYANT_DATA_DIR`，请在 `config.toml` 的 `[mcp_servers."懒蚂蚁".env]` 中手动补上（与首页教程复制内容一致）。
+若 CLI 未写入 `LAZYANT_DATA_DIR`，请在 `config.toml` 的 `[mcp_servers.lazyant.env]` 中手动补上（与首页教程复制内容一致）。
 
 保存后重启 Codex / 新开 `codex` 会话，在工具列表中应能看到「懒蚂蚁」的工具。
 
@@ -245,7 +247,8 @@ LAZYANT_DATA_DIR="$HOME/Library/Application Support/懒蚂蚁" \
 ```json
 {
   "mcpServers": {
-    "懒蚂蚁": {
+    "lazyant": {
+      "type": "stdio",
       "command": "pnpm",
       "args": ["--dir", "/你的路径/lazy-ant/apps/desktop", "cli:mcp"],
       "env": {
@@ -259,15 +262,15 @@ LAZYANT_DATA_DIR="$HOME/Library/Application Support/懒蚂蚁" \
 **Codex**（`~/.codex/config.toml`，开发态）：
 
 ```toml
-[mcp_servers."懒蚂蚁"]
+[mcp_servers.lazyant]
 command = "pnpm"
 args = ["--dir", "/你的路径/lazy-ant/apps/desktop", "cli:mcp"]
 
-[mcp_servers."懒蚂蚁".env]
+[mcp_servers.lazyant.env]
 LAZYANT_DATA_DIR = "/Users/你的用户名/Library/Application Support/懒蚂蚁"
 ```
 
-已安装懒蚂蚁的正式用户请从首页打开对应客户端教程，再点 **「复制 MCP 配置」**（指向 `lazyant-mcp`，无需 Node / pnpm）。
+已安装懒蚂蚁的正式用户请从首页打开对应客户端教程；macOS / Windows 可直接点 **「一键配置」**，也可使用 **「复制 MCP 配置」**（指向 `lazyant-mcp`，无需 Node / pnpm）。
 
 ### 使用示例
 
