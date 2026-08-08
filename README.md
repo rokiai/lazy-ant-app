@@ -16,13 +16,13 @@ macOS · Windows · Linux
 
 ## 下载
 
-| 系统        | 架构                    | 安装包              | 下载                                                                                          |
-| :---------- | :---------------------- | :------------------ | :-------------------------------------------------------------------------------------------- |
-| **macOS**   | Apple Silicon（M 系列） | `懒蚂蚁-arm64.dmg`  | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-arm64.dmg)  |
-| **macOS**   | Intel                   | `懒蚂蚁-x64.dmg`    | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-x64.dmg)    |
-| **Windows** | 64 位                   | `懒蚂蚁-setup.exe`  | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-setup.exe)  |
-| **Linux**   | 64 位                   | `懒蚂蚁.AppImage`   | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁.AppImage)   |
-| **Linux**   | Debian / Ubuntu         | `lazyant_amd64.deb` | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/lazyant_amd64.deb) |
+| 系统        | 架构                    | 安装包                    | 下载                                                                                                |
+| :---------- | :---------------------- | :------------------------ | :-------------------------------------------------------------------------------------------------- |
+| **macOS**   | Apple Silicon（M 系列） | `懒蚂蚁-1.4.7-arm64.dmg`  | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-1.4.7-arm64.dmg)  |
+| **macOS**   | Intel                   | `懒蚂蚁-1.4.7-x64.dmg`    | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-1.4.7-x64.dmg)    |
+| **Windows** | 64 位                   | `懒蚂蚁-1.4.7-setup.exe`  | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-1.4.7-setup.exe)  |
+| **Linux**   | 64 位                   | `懒蚂蚁-1.4.7.AppImage`   | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-1.4.7.AppImage)   |
+| **Linux**   | Debian / Ubuntu         | `lazyant-1.4.7_amd64.deb` | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/lazyant-1.4.7_amd64.deb) |
 
 > 链接指向最新 Release。macOS 安装包尚未签名，若提示「无法验证开发者」见文末 [安装说明](#安装说明)。
 
@@ -299,7 +299,7 @@ LAZYANT_DATA_DIR = "/Users/你的用户名/Library/Application Support/懒蚂蚁
 
 ### macOS
 
-1. 按芯片下载对应 DMG：[Apple Silicon](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-arm64.dmg) · [Intel](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-x64.dmg)
+1. 按芯片下载对应 DMG：[Apple Silicon](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-1.4.7-arm64.dmg) · [Intel](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-1.4.7-x64.dmg)
 2. 打开 DMG，把 **懒蚂蚁** 拖进「应用程序」
 3. 从「应用程序」启动
 
@@ -314,13 +314,13 @@ open /Applications/懒蚂蚁.app
 
 ### Windows
 
-1. 运行 [懒蚂蚁-setup.exe](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-setup.exe)
+1. 运行 [懒蚂蚁-1.4.7-setup.exe](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-1.4.7-setup.exe)
 2. 若出现 SmartScreen：点「更多信息」→「仍要运行」
 
 ### Linux
 
-- **AppImage**：`chmod +x 懒蚂蚁.AppImage && ./懒蚂蚁.AppImage`（[下载](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁.AppImage)）
-- **deb**：`sudo dpkg -i lazyant_amd64.deb`（[下载](https://github.com/rokiai/lazy-ant-app/releases/latest/download/lazyant_amd64.deb)，缺依赖时再 `sudo apt -f install`）
+- **AppImage**：`chmod +x 懒蚂蚁-1.4.7.AppImage && ./懒蚂蚁-1.4.7.AppImage`（[下载](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-1.4.7.AppImage)）
+- **deb**：`sudo dpkg -i lazyant-1.4.7_amd64.deb`（[下载](https://github.com/rokiai/lazy-ant-app/releases/latest/download/lazyant-1.4.7_amd64.deb)，缺依赖时再 `sudo apt -f install`）
 
 ## 免责声明
 
