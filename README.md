@@ -110,15 +110,15 @@
 <table>
   <tr>
     <td width="33%" align="center" valign="top">
-      <img src="./assets/图文主题-蓝色撕纸风.png" height="700px" alt="蓝色撕纸风" width="100%" />
+      <img src="./assets/图文主题-蓝色撕纸风.png" alt="蓝色撕纸风" width="100%" />
       <br /><sub>蓝色撕纸风</sub>
     </td>
     <td width="33%" align="center" valign="top">
-      <img src="./assets/图文主题-活页记事本.png" height="700px" alt="活页记事本" width="100%" />
+      <img src="./assets/图文主题-活页记事本.png" alt="活页记事本" width="100%" />
       <br /><sub>活页记事本</sub>
     </td>
     <td width="33%" align="center" valign="top">
-      <img src="./assets/图文主题-信封.png"  height="700px" alt="信封" width="100%" />
+      <img src="./assets/图文主题-信封.png"  alt="信封" width="100%" />
       <br /><sub>信封</sub>
     </td>
   </tr>
