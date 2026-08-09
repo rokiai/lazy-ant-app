@@ -32,7 +32,7 @@
 - [功能一览](#功能一览)
 - [内容工作流](#内容工作流)
 - [快速上手](#快速上手)
-- [MCP 接入](#mcp-接入cursor--codex--workbuddy)
+- [MCP 接入](#mcp-接入)
 - [支持的平台](#支持的平台)
 - [安装说明](#安装说明)
 - [免责声明](#免责声明)
@@ -107,10 +107,22 @@
 
 <p align="center"><strong>图文主题 · 小红书预览模式</strong></p>
 
-<div align="center">
-  <img src="./assets/图文主题-小红书预览模式.png" alt="图文主题：蓝色撕纸风、活页记事本、信封" width="720" />
-  <br /><sub>蓝色撕纸风 · 活页记事本 · 信封</sub>
-</div>
+<table>
+  <tr>
+    <td width="33%" align="center" valign="top">
+      <img src="./assets/图文主题-蓝色撕纸风.png" height="700px" alt="蓝色撕纸风" width="100%" />
+      <br /><sub>蓝色撕纸风</sub>
+    </td>
+    <td width="33%" align="center" valign="top">
+      <img src="./assets/图文主题-活页记事本.png" height="700px" alt="活页记事本" width="100%" />
+      <br /><sub>活页记事本</sub>
+    </td>
+    <td width="33%" align="center" valign="top">
+      <img src="./assets/图文主题-信封.png"  height="700px" alt="信封" width="100%" />
+      <br /><sub>信封</sub>
+    </td>
+  </tr>
+</table>
 
 <div align="right">
 
@@ -230,142 +242,21 @@
 
 </div>
 
-## MCP 接入（Cursor / Codex / WorkBuddy）
+## MCP 接入
 
-懒蚂蚁自带 **MCP Server**，让 [Cursor](https://cursor.com)、[OpenAI Codex](https://developers.openai.com/codex)、WorkBuddy 等外部 AI 客户端直接读写本地的文章、图文、Skill 与个人主题——与桌面端共用同一份数据，写完可在懒蚂蚁里预览、排版、发布。
+懒蚂蚁自带 **MCP Server**，可让 [Cursor](https://cursor.com)、[OpenAI Codex](https://developers.openai.com/codex)、WorkBuddy 等外部 AI 直接读写本地内容，与桌面端共用同一份数据；写完后在懒蚂蚁里预览、排版、发布。首页提供一键配置入口。
 
-### 能做什么
+| 能力         | 说明                                      |
+| :----------- | :---------------------------------------- |
+| **文章**     | 新建、读取与修改文章定稿                  |
+| **图文**     | 新建、读取与修改图文定稿（Markdown 分卡） |
+| **文稿素材** | 把本机临时图片挂到指定文章或图文的素材栏  |
+| **Skill**    | 管理「我的模板」中的写作 Skill            |
+| **文章主题** | 浏览市场主题，新建与维护个人文章主题      |
+| **图文主题** | 浏览市场主题，新建与维护个人图文主题      |
+| **写作规范** | 通过 Prompt / Resource 读取 Markdown 规范 |
 
-| 能力         | 新建 | 修改 | MCP 入口                                                                                                                           |
-| :----------- | :--: | :--: | :--------------------------------------------------------------------------------------------------------------------------------- |
-| **规范**     |  —   |  —   | **Prompt** `写文章` 等（推荐）；或 Resource / `get_*_spec`                                                                         |
-| **文章**     |  ✅  |  ✅  | `get_article_draft` / `create_article_draft` / `update_article_draft`                                                              |
-| **图文**     |  ✅  |  ✅  | `get_image_text_draft` / `create_image_text_draft` / `update_image_text_draft`（`---` 分卡，至少 4 张卡）                          |
-| **Skill**    |  ✅  |  ✅  | `search_workspace_skills` / `get_workspace_skill` / `create_workspace_skill` / `update_workspace_skill` / `delete_workspace_skill` |
-| **文章主题** |  ✅  |  ✅  | `search_article_themes` / `get_article_theme` / `create_article_theme` / `update_article_theme`                                    |
-| **图文主题** |  ✅  |  ✅  | `search_image_themes` / `get_image_theme` / `create_image_theme` / `update_image_theme`                                            |
-
-说明：
-
-- 文章与图文定稿写入 `workspace/articles/article-ready.json`，打开懒蚂蚁编辑器即可看到。
-- **写前先读规范**：优先用 MCP Prompt `写文章` 等；或 `get_*_spec` / Resource `lazyant://spec/...`。
-- 个人主题写入 `workspace/themes/`，会自动同步到「我的主题」；市场内置主题可浏览读取，修改仅针对个人主题。
-- 平台发布、登录态检测等不通过 MCP 暴露。
-
-### 配置步骤（推荐：已安装懒蚂蚁）
-
-1. 打开懒蚂蚁首页，点击 Cursor、Codex 或 WorkBuddy 打开对应教程
-2. macOS / Windows 点击 **「一键配置」**；Linux 点击 **「复制 MCP 配置」** 后手动写入（Linux 暂不支持一键配置）
-3. 重启客户端，确认「懒蚂蚁」服务已连接
-
-#### Cursor
-
-Cursor 全局配置文件为 `~/.cursor/mcp.json`（Windows 为 `%USERPROFILE%\\.cursor\\mcp.json`）。一键配置会增量保留其他 MCP 服务。
-
-macOS 安装包示例（路径以你复制的内容为准）：
-
-```json
-{
-  "mcpServers": {
-    "lazyant": {
-      "type": "stdio",
-      "command": "/Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp",
-      "args": [],
-      "env": {
-        "LAZYANT_DATA_DIR": "/Users/你的用户名/Library/Application Support/懒蚂蚁"
-      }
-    }
-  }
-}
-```
-
-Windows 启动器为 `Resources\lazyant-mcp.cmd`；Linux 仅提供复制内容，启动器路径需手动确认。无需单独安装 Node / pnpm。
-
-#### OpenAI Codex
-
-Codex 使用 TOML，不是 JSON。在首页打开 Codex 教程后配置到：
-
-- 用户级：`~/.codex/config.toml`（全局生效；Windows 为 `%USERPROFILE%\\.codex\\config.toml`）
-
-一键配置只替换 `[mcp_servers.lazyant]`，保留其他配置。
-
-macOS 安装包示例：
-
-```toml
-[mcp_servers.lazyant]
-command = "/Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp"
-args = []
-
-[mcp_servers.lazyant.env]
-LAZYANT_DATA_DIR = "/Users/你的用户名/Library/Application Support/懒蚂蚁"
-```
-
-也可用 Codex CLI 注册：
-
-```bash
-codex mcp add lazyant -- /Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp
-```
-
-若 CLI 未写入 `LAZYANT_DATA_DIR`，请在 `config.toml` 的 `[mcp_servers.lazyant.env]` 中手动补上。
-
-### 从源码开发时
-
-在仓库根目录（开发专用，需本机已装 pnpm）：
-
-```bash
-LAZYANT_DATA_DIR="$HOME/Library/Application Support/懒蚂蚁" \
-  pnpm --filter @lazy-ant/desktop cli:mcp
-```
-
-**Cursor**（`.cursor/mcp.json`，开发态）：
-
-```json
-{
-  "mcpServers": {
-    "lazyant": {
-      "type": "stdio",
-      "command": "pnpm",
-      "args": ["--dir", "/你的路径/lazy-ant/apps/desktop", "cli:mcp"],
-      "env": {
-        "LAZYANT_DATA_DIR": "/Users/你的用户名/Library/Application Support/懒蚂蚁"
-      }
-    }
-  }
-}
-```
-
-**Codex**（`~/.codex/config.toml`，开发态）：
-
-```toml
-[mcp_servers.lazyant]
-command = "pnpm"
-args = ["--dir", "/你的路径/lazy-ant/apps/desktop", "cli:mcp"]
-
-[mcp_servers.lazyant.env]
-LAZYANT_DATA_DIR = "/Users/你的用户名/Library/Application Support/懒蚂蚁"
-```
-
-### 使用示例
-
-在 Cursor / Codex 里可以让 AI 调用工具，例如：
-
-- 「用 `create_article_draft` 写一篇关于懒蚂蚁的公众号稿」
-- 「读取当前图文定稿，把第三张卡改短一点再保存」
-- 「新建一个 Skill，SKILL.md 里写小红书种草笔记结构」
-- 「基于摸鱼绿主题风格，生成一套个人文章主题 CSS 并保存」
-
-保存图文时，`content` 须用独立行的 `---` 分隔卡片，至少 4 张卡，`tags` 恰好 3 个话题（不要加 `#`）：
-
-```json
-{
-  "title": "笔记标题",
-  "digest": "八十到一百字摘要",
-  "content": "开头钩子\n\n---\n\n经历分享\n\n---\n\n三个方法\n\n---\n\n结尾提问",
-  "tags": ["效率工具", "职场干货", "个人成长"]
-}
-```
-
-更完整的工具说明与数据路径见 [MCP Server 文档][mcp-doc-link]。
+配置步骤与工具细节见 [MCP Server 文档][mcp-doc-link]。
 
 <div align="right">
 
