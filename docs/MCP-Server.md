@@ -25,7 +25,7 @@
 
 懒蚂蚁将“客户端安装资格”“MCP 配置文件状态”和“客户端实际连接状态”分开处理：配置文件已写入不代表外部客户端已经建立连接，完成配置后需要重启对应客户端确认工具可用。
 
-- macOS / Windows 会通过系统注册信息、标准安装路径和 Codex CLI 路径检测 Cursor、Codex、WorkBuddy；macOS 还会通过 `com.openai.codex` 应用身份识别统一后的 `ChatGPT.app` 和旧版 `Codex.app`。用户使用自定义安装位置时，可以在首页选择程序或可执行文件路径，懒蚂蚁会校验应用包、可执行文件名称和客户端身份，不接受任意文件夹。手动路径失效时会保留设置，但客户端暂时不参与自动配置和 Skill 同步，路径恢复后自动重新出现。
+- macOS / Windows 会通过系统注册信息、标准安装路径和 Codex CLI 路径检测 Cursor、Codex、WorkBuddy；macOS 还会通过 `com.openai.codex` 应用身份识别统一后的 `ChatGPT.app` 和旧版 `Codex.app`，Windows 会识别标准目录中的 `Codex.exe` / `ChatGPT.exe`。用户使用自定义安装位置时，可以在首页选择程序或可执行文件路径，懒蚂蚁会校验应用包、可执行文件名称和客户端身份，不接受任意文件夹。手动路径失效时会保留设置，但客户端暂时不参与自动配置和 Skill 同步，路径恢复后自动重新出现。
 - 手动选择程序路径时，macOS 请在 Finder 的“应用程序”中选择程序包图标本身，不要进入“显示包内容”：Cursor 选择 `Cursor.app`，WorkBuddy 选择 `WorkBuddy.app`，ChatGPT / Codex 选择 `ChatGPT.app`、旧版 `Codex.app`；如果使用 Codex CLI，可在终端执行 `which codex`，再选择输出的 `codex` 可执行文件。Windows 请在文件选择器中选择真实的 `Cursor.exe`、`WorkBuddy.exe` 或 `codex.exe` / `codex.cmd` / `codex.bat`；Codex CLI 也可以先在 PowerShell 执行 `where.exe codex`，再选择输出的文件。`.cursor`、`.codex`、`.workbuddy` 配置目录、安装目录和任意文件夹都不是客户端程序。
 - 检测不到任何客户端时，首页仍保留 MCP 接入入口。用户可以手动添加客户端、查看三端接入说明或复制配置；复制 MCP 配置不依赖安装检测，方便先手动安装或配置。
 - macOS / Windows 的“一键配置”只对已检测或手动添加的客户端开放；未检测到客户端时不会创建配置目录或文件。Linux 不做安装资格过滤，三种客户端都保留复制配置入口，但不支持一键写入。
