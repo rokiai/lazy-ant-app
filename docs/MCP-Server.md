@@ -1,6 +1,6 @@
 # 懒蚂蚁 MCP Server
 
-本文档是懒蚂蚁 MCP Server 的唯一维护入口，覆盖客户端接入、MCP v2 契约、Tool 工作流、用户数据边界、主题快照格式和开发态官方资源同步。懒蚂蚁提供本地 stdio MCP Server，供 Cursor、ChatGPT / Codex、WorkBuddy / CodeBuddy 等客户端读写 Markdown 草稿、主题和「我的模板」Skill。完整模块与 Tool builder 职责见 [MCP Server README](../apps/desktop/src/mcp-server/README.md)。
+本文档是懒蚂蚁 MCP Server 的唯一维护入口，覆盖客户端接入、MCP v2 契约、Tool 工作流、用户数据边界、主题快照格式和开发态官方资源同步。懒蚂蚁提供本地 stdio MCP Server，供 Cursor、ChatGPT / Codex 和 WorkBuddy 等客户端读写 Markdown 草稿、主题和「我的模板」Skill。完整模块与 Tool builder 职责见 [MCP Server README](../apps/desktop/src/mcp-server/README.md)。
 
 ## 文档定位与维护原则
 
@@ -26,10 +26,10 @@
 懒蚂蚁将“客户端安装资格”“MCP 配置文件状态”和“客户端实际连接状态”分开处理：配置文件已写入不代表外部客户端已经建立连接，完成配置后需要重启对应客户端确认工具可用。
 
 - macOS / Windows 会通过系统注册信息、标准安装路径和 Codex CLI 路径检测 Cursor、Codex、WorkBuddy；macOS 还会通过 `com.openai.codex` 应用身份识别统一后的 `ChatGPT.app` 和旧版 `Codex.app`。用户使用自定义安装位置时，可以在首页选择程序或可执行文件路径，懒蚂蚁会校验应用包、可执行文件名称和客户端身份，不接受任意文件夹。手动路径失效时会保留设置，但客户端暂时不参与自动配置和 Skill 同步，路径恢复后自动重新出现。
-- 手动选择程序路径时，macOS 请在 Finder 的“应用程序”中选择程序包图标本身，不要进入“显示包内容”：Cursor 选择 `Cursor.app`，WorkBuddy / CodeBuddy 选择对应的 `.app` 程序包，ChatGPT / Codex 选择 `ChatGPT.app`、旧版 `Codex.app`；如果使用 Codex CLI，可在终端执行 `which codex`，再选择输出的 `codex` 可执行文件。Windows 请在文件选择器中选择真实的 `Cursor.exe`、`WorkBuddy.exe` / `CodeBuddy.exe` 或 `codex.exe` / `codex.cmd` / `codex.bat`；Codex CLI 也可以先在 PowerShell 执行 `where.exe codex`，再选择输出的文件。`.cursor`、`.codex`、`.codebuddy` 配置目录、安装目录和任意文件夹都不是客户端程序。
+- 手动选择程序路径时，macOS 请在 Finder 的“应用程序”中选择程序包图标本身，不要进入“显示包内容”：Cursor 选择 `Cursor.app`，WorkBuddy 选择 `WorkBuddy.app`，ChatGPT / Codex 选择 `ChatGPT.app`、旧版 `Codex.app`；如果使用 Codex CLI，可在终端执行 `which codex`，再选择输出的 `codex` 可执行文件。Windows 请在文件选择器中选择真实的 `Cursor.exe`、`WorkBuddy.exe` 或 `codex.exe` / `codex.cmd` / `codex.bat`；Codex CLI 也可以先在 PowerShell 执行 `where.exe codex`，再选择输出的文件。`.cursor`、`.codex`、`.workbuddy` 配置目录、安装目录和任意文件夹都不是客户端程序。
 - 检测不到任何客户端时，首页仍保留 MCP 接入入口。用户可以手动添加客户端、查看三端接入说明或复制配置；复制 MCP 配置不依赖安装检测，方便先手动安装或配置。
 - macOS / Windows 的“一键配置”只对已检测或手动添加的客户端开放；未检测到客户端时不会创建配置目录或文件。Linux 不做安装资格过滤，三种客户端都保留复制配置入口，但不支持一键写入。
-- `.cursor`、`.codex`、`.codebuddy` 配置目录的存在只能表示配置文件残留，不能作为客户端已安装证据。
+- `.cursor`、`.codex`、`.workbuddy` 配置目录的存在只能表示配置文件残留，不能作为客户端已安装证据。
 
 Cursor 配置示例：
 
@@ -48,9 +48,9 @@ Cursor 配置示例：
 }
 ```
 
-Cursor 全局配置文件为 `~/.cursor/mcp.json`；WorkBuddy / CodeBuddy 用户级 MCP 配置优先使用 `~/.codebuddy/.mcp.json`，`~/.codebuddy/mcp.json` 和 `~/.codebuddy.json` 为旧位置。一键配置只增量替换 `mcpServers.lazyant`，不会覆盖其他服务，也不写项目级配置。
+Cursor 全局配置文件为 `~/.cursor/mcp.json`；WorkBuddy 用户级 MCP 配置为 `~/.workbuddy/mcp.json`，项目级配置为项目内的 `.workbuddy/mcp.json`。一键配置只增量替换 `mcpServers.lazyant`，不会覆盖其他服务，也不写项目级配置。Windows 会将用户级路径展开为 `%USERPROFILE%\.workbuddy\mcp.json`。
 
-官方依据：[Cursor MCP 文档](https://cursor.com/docs/mcp)、[CodeBuddy IDE MCP 文档](https://www.codebuddy.ai/docs/zh/ide/User-guide/MCP) 和 [CodeBuddy MCP 使用文档](https://www.codebuddy.ai/docs/zh/cli/mcp)。
+官方依据：[Cursor MCP 文档](https://cursor.com/docs/mcp) 和 [WorkBuddy MCP 配置指南](https://www.codebuddy.ai/docs/zh/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/MCP-Guide)。
 
 Codex 配置示例：
 
@@ -155,9 +155,9 @@ Cursor 开发配置：
 | `update_workspace_skill` | 先 get，再传整包 `revision`、`path` 和 `content` 或 `edits`              |
 | `delete_workspace_skill` | 仅在用户明确要求删除时调用，必须带最新整包 `revision` 和 `confirm: true` |
 
-`skill-packs` 是权威目录。MCP 只读写该目录，不直接访问外部 Skill 镜像。macOS / Windows 下桌面应用启动时执行一次对齐，并将「我的 Skill」同步到 Codex、Cursor 共用的 `~/.agents/skills` 以及 WorkBuddy 的 `~/.codebuddy/skills`；Linux 暂不自动落盘，不创建外部镜像目录。运行期间由 `skill-packs` watcher 在模板变更后调度同步。
+`skill-packs` 是权威目录。MCP 只读写该目录，不直接访问外部 Skill 镜像。macOS / Windows 下桌面应用启动时执行一次对齐，并将「我的 Skill」同步到 Codex、Cursor 共用的 `~/.agents/skills` 以及 WorkBuddy 的 `~/.workbuddy/skills`；Linux 暂不自动落盘，不创建外部镜像目录。运行期间由 `skill-packs` watcher 在模板变更后调度同步。
 
-Skill 镜像只同步到当前平台支持且至少有一个对应客户端已检测或手动添加的目标：Codex 或 Cursor 共用 `~/.agents/skills`，WorkBuddy 使用 `~/.codebuddy/skills`。目标没有同步资格时，懒蚂蚁不会创建、更新或删除目标目录，也不会改变该目标的台账记录；已有目录仍可直接打开，目录不存在时只提示尚未创建。同步设置展示当前有可用宿主的目标，以及已有的不可用残留目录。
+Skill 镜像只同步到当前平台支持且至少有一个对应客户端已检测或手动添加的目标：Codex 或 Cursor 共用 `~/.agents/skills`，WorkBuddy 使用 `~/.workbuddy/skills`。目标没有同步资格时，懒蚂蚁不会创建、更新或删除目标目录，也不会改变该目标的台账记录；已有目录仍可直接打开，目录不存在时只提示尚未创建。同步设置展示当前有可用宿主的目标，以及已有的不可用残留目录。
 
 桌面单文件编辑、整包覆盖和 MCP 更新共用同一份整包内容 `revision` 校验和跨进程写锁；市场安装只负责准备工作区目录，不提供隐式 market 回退写入。`search_workspace_skills` 与桌面一级列表使用的 `scanRevision` 仅用于轻量变更检测，不能作为任何写入请求的 `revision`。
 
