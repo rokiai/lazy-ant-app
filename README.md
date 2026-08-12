@@ -173,15 +173,15 @@
 
 ## 下载
 
-| 系统        | 架构                    | 安装包                    | 下载                                                                                                |
-| :---------- | :---------------------- | :------------------------ | :-------------------------------------------------------------------------------------------------- |
-| **macOS**   | Apple Silicon（M 系列） | `懒蚂蚁-1.4.7-arm64.dmg`  | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-1.4.7-arm64.dmg)  |
-| **macOS**   | Intel                   | `懒蚂蚁-1.4.7-x64.dmg`    | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-1.4.7-x64.dmg)    |
-| **Windows** | 64 位                   | `懒蚂蚁-1.4.7-setup.exe`  | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-1.4.7-setup.exe)  |
-| **Linux**   | 64 位                   | `懒蚂蚁-1.4.7.AppImage`   | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-1.4.7.AppImage)   |
-| **Linux**   | Debian / Ubuntu         | `lazyant-1.4.7_amd64.deb` | [**下载**](https://github.com/rokiai/lazy-ant-app/releases/latest/download/lazyant-1.4.7_amd64.deb) |
+| 系统        | 架构                    | 安装包                    | 下载                                                     |
+| :---------- | :---------------------- | :------------------------ | :------------------------------------------------------- |
+| **macOS**   | Apple Silicon（M 系列） | `lazyant-1.5.0-arm64.dmg` | [**下载**](https://pan.quark.cn/s/1430cb0aa30e?pwd=fmGx) |
+| **macOS**   | Intel                   | `lazyant-1.5.0-x64.dmg`   | [**下载**](https://pan.quark.cn/s/1430cb0aa30e?pwd=fmGx) |
+| **Windows** | 64 位                   | `lazyant-1.5.0-setup.exe` | [**下载**](https://pan.quark.cn/s/1430cb0aa30e?pwd=fmGx) |
+| **Linux**   | 64 位                   | `lazyant-1.5.0.AppImage`  | [**下载**](https://pan.quark.cn/s/1430cb0aa30e?pwd=fmGx) |
+| **Linux**   | Debian / Ubuntu         | `lazyant-1.5.0_amd64.deb` | [**下载**](https://pan.quark.cn/s/1430cb0aa30e?pwd=fmGx) |
 
-> 链接指向最新 Release。macOS 安装包尚未签名，若提示「无法验证开发者」见 [安装说明](#安装说明)。
+> 夸克网盘提取码：`fmGx`。macOS 安装包尚未签名，若提示「无法验证开发者」见 [安装说明](#安装说明)。
 
 <div align="right">
 
@@ -280,7 +280,7 @@
 
 ### macOS
 
-1. 按芯片下载对应 DMG：[Apple Silicon](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-1.4.7-arm64.dmg) · [Intel](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-1.4.7-x64.dmg)
+1. 按芯片在[夸克网盘](https://pan.quark.cn/s/1430cb0aa30e?pwd=fmGx)下载对应 DMG
 2. 打开 DMG，把 **懒蚂蚁** 拖进「应用程序」
 3. 从「应用程序」启动
 
@@ -295,13 +295,13 @@ open /Applications/懒蚂蚁.app
 
 ### Windows
 
-1. 运行 [懒蚂蚁-1.4.7-setup.exe](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-1.4.7-setup.exe)
+1. 从[夸克网盘](https://pan.quark.cn/s/1430cb0aa30e?pwd=fmGx)下载并运行 `lazyant-1.5.0-setup.exe`
 2. 若出现 SmartScreen：点「更多信息」→「仍要运行」
 
 ### Linux
 
-- **AppImage**：`chmod +x 懒蚂蚁-1.4.7.AppImage && ./懒蚂蚁-1.4.7.AppImage`（[下载](https://github.com/rokiai/lazy-ant-app/releases/latest/download/懒蚂蚁-1.4.7.AppImage)）
-- **deb**：`sudo dpkg -i lazyant-1.4.7_amd64.deb`（[下载](https://github.com/rokiai/lazy-ant-app/releases/latest/download/lazyant-1.4.7_amd64.deb)，缺依赖时再 `sudo apt -f install`）
+- **AppImage**：从[夸克网盘](https://pan.quark.cn/s/1430cb0aa30e?pwd=fmGx)下载后，执行 `chmod +x lazyant-1.5.0.AppImage && ./lazyant-1.5.0.AppImage`
+- **deb**：从[夸克网盘](https://pan.quark.cn/s/1430cb0aa30e?pwd=fmGx)下载后，执行 `sudo dpkg -i lazyant-1.5.0_amd64.deb`；缺依赖时再执行 `sudo apt -f install`
 
 <div align="right">
 
@@ -328,7 +328,7 @@ open /Applications/懒蚂蚁.app
 
 [back-to-top]: https://img.shields.io/badge/-回到顶部-151515?style=flat-square
 [changelog-link]: ./CHANGELOG.md
-[download-link]: https://github.com/rokiai/lazy-ant-app/releases/latest
+[download-link]: https://pan.quark.cn/s/1430cb0aa30e?pwd=fmGx
 [license-shield]: https://img.shields.io/badge/用途-学习研究-lightgrey?style=flat-square
 [mcp-doc-link]: ./docs/MCP-Server.md
 [platform-shield]: https://img.shields.io/badge/平台-macOS%20%7C%20Windows%20%7C%20Linux-blue?style=flat-square
