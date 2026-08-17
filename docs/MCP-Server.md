@@ -13,11 +13,11 @@
 
 ### 安装包用户
 
-在懒蚂蚁首页打开客户端教程。macOS / Windows 支持「一键配置」写入全局文件；Linux 暂不支持一键写入，但仍可「复制 MCP 配置」后手动写入。启动器位于：
+在懒蚂蚁首页打开客户端教程。macOS / Windows / Linux（deb 安装）支持「一键配置」写入全局文件；Linux AppImage 每次启动挂载到随机路径，写入的启动器路径会失效，只能「复制 MCP 配置」后手动维护稳定路径。启动器位于：
 
 - macOS：`/Applications/懒蚂蚁.app/Contents/Resources/lazyant-mcp`
 - Windows：安装目录 `resources\lazyant-mcp.cmd`
-- Linux：安装目录 `resources/lazyant-mcp`（仅复制配置，需手动确认路径）
+- Linux：安装目录 `resources/lazyant-mcp`（deb 通常在 `/opt/懒蚂蚁/resources/lazyant-mcp`）
 
 启动器通过 `ELECTRON_RUN_AS_NODE` 运行 `Resources/mcp/stdio.js`，并与桌面端共用 userData。
 
@@ -28,8 +28,8 @@
 - macOS / Windows 会通过系统注册信息、标准安装路径和 Codex CLI 路径检测 Cursor、Codex、WorkBuddy；macOS 还会通过 `com.openai.codex` 应用身份识别统一后的 `ChatGPT.app` 和旧版 `Codex.app`，Windows 会识别标准目录中的 `Codex.exe` / `ChatGPT.exe`。用户使用自定义安装位置时，可以在首页选择程序或可执行文件路径，懒蚂蚁会校验应用包、可执行文件名称和客户端身份，不接受任意文件夹。手动路径失效时会保留设置，但客户端暂时不参与自动配置和 Skill 同步，路径恢复后自动重新出现。
 - 手动选择程序路径时，macOS 请在 Finder 的“应用程序”中选择程序包图标本身，不要进入“显示包内容”：Cursor 选择 `Cursor.app`，WorkBuddy 选择 `WorkBuddy.app`，ChatGPT / Codex 选择 `ChatGPT.app`、旧版 `Codex.app`；如果使用 Codex CLI，可在终端执行 `which codex`，再选择输出的 `codex` 可执行文件。Windows 请在文件选择器中选择真实的 `Cursor.exe`、`WorkBuddy.exe` 或 `codex.exe` / `codex.cmd` / `codex.bat`；Codex CLI 也可以先在 PowerShell 执行 `where.exe codex`，再选择输出的文件。`.cursor`、`.codex`、`.workbuddy` 配置目录、安装目录和任意文件夹都不是客户端程序。
 - 检测不到任何客户端时，首页仍保留 MCP 接入入口。用户可以手动添加客户端、查看三端接入说明或复制配置；复制 MCP 配置不依赖安装检测，方便先手动安装或配置。
-- macOS / Windows 的“一键配置”只对已检测或手动添加的客户端开放；未检测到客户端时不会创建配置目录或文件。Linux 不做安装资格过滤，三种客户端都保留复制配置入口，但不支持一键写入。
-- `.cursor`、`.codex`、`.workbuddy` 配置目录的存在只能表示配置文件残留，不能作为客户端已安装证据。
+- “一键配置”只对已检测或手动添加的客户端开放；未检测到客户端时不会创建配置目录或文件。Linux AppImage 运行时一键写入被禁用（挂载路径易失），复制配置入口始终保留。
+- macOS / Windows 上 `.cursor`、`.codex`、`.workbuddy` 配置目录的存在只表示配置文件残留，不作为客户端已安装证据。Linux 桌面应用分发碎片化（deb / AppImage / snap），不做可执行文件探测，以配置目录存在作为安装信号；装过但从未启动的客户端可通过手动添加路径补救。
 
 Cursor 配置示例：
 

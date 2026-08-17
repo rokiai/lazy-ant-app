@@ -1,6 +1,6 @@
 <div align="center"><a name="readme-top"></a>
 
-<img src="./assets/banner.png" alt="懒蚂蚁：你的 AI 内容创作助手" width="100%" />
+<img src="./assets/banner.jpeg" alt="懒蚂蚁：你的 AI 内容创作助手" width="100%" />
 
 <br />
 
